@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qx.cases.mapper.CaseTreatmentMapper">
+    
+    <resultMap type="CaseTreatment" id="CaseTreatmentResult">
+        <result property="treatmentId"    column="treatment_id"    />
+        <result property="treatmentName"    column="treatment_name"    />
+        <result property="pid"    column="pid"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectCaseTreatmentVo">
+        select treatment_id, treatment_name, pid, create_by, create_time, update_by, update_time from case_treatment
+    </sql>
+
+    <select id="selectCaseTreatmentList" parameterType="CaseTreatment" resultMap="CaseTreatmentResult">
+        <include refid="selectCaseTreatmentVo"/>
+        <where>  
+            <if test="treatmentName != null  and treatmentName != ''"> and treatment_name like concat('%', #{treatmentName}, '%')</if>
+            <if test="pid != null "> and pid = #{pid}</if>
+        </where>
+    </select>
+
+    <select id="selectCaseTreatmentById" parameterType="Long" resultMap="CaseTreatmentResult">
+        <include refid="selectCaseTreatmentVo"/>
+        where treatment_id = #{treatmentId}
+    </select>
+    <select id="selectCaseTreatmentByIds" parameterType="Long" resultMap="CaseTreatmentResult">
+        <include refid="selectCaseTreatmentVo"/>
+        where treatment_id in
+        <foreach collection="array" item="treatmentId" open="(" separator="," close=")">
+            #{treatmentId}
+        </foreach>
+    </select>
+        
+    <insert id="insertCaseTreatment" parameterType="CaseTreatment" useGeneratedKeys="true" keyProperty="treatmentId">
+        insert into case_treatment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="treatmentName != null  and treatmentName != ''">treatment_name,</if>
+            <if test="pid != null ">pid,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="treatmentName != null  and treatmentName != ''">#{treatmentName},</if>
+            <if test="pid != null ">#{pid},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCaseTreatment" parameterType="CaseTreatment">
+        update case_treatment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="treatmentName != null  and treatmentName != ''">treatment_name = #{treatmentName},</if>
+            <if test="pid != null ">pid = #{pid},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where treatment_id = #{treatmentId}
+    </update>
+
+    <delete id="deleteCaseTreatmentById" parameterType="Long">
+        delete from case_treatment where treatment_id = #{treatmentId}
+    </delete>
+
+    <delete id="deleteCaseTreatmentByIds" parameterType="String">
+        delete from case_treatment where treatment_id in 
+        <foreach item="treatmentId" collection="array" open="(" separator="," close=")">
+            #{treatmentId}
+        </foreach>
+    </delete>
+
+    <select id="hasChildById" resultType="Integer">
+        select count(1) from case_treatment where pid = #{treatmentId}
+    </select>
+    
+</mapper>

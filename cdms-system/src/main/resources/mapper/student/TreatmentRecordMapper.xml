@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qx.student.mapper.TreatmentRecordMapper">
+    
+    <resultMap type="TreatmentRecord" id="TreatmentRecordResult">
+        <result property="id"    column="id"    />
+        <result property="treatmentIds"    column="treatment_ids"    />
+    </resultMap>
+
+    <sql id="selectTreatmentRecordVo">
+        select id, treatment_ids from treatment_record
+    </sql>
+
+    <select id="selectTreatmentRecordList" parameterType="TreatmentRecord" resultMap="TreatmentRecordResult">
+        <include refid="selectTreatmentRecordVo"/>
+        <where>  
+            <if test="treatmentIds != null  and treatmentIds != ''"> and treatment_ids = #{treatmentIds}</if>
+        </where>
+    </select>
+    
+    <select id="selectTreatmentRecordById" parameterType="Long" resultMap="TreatmentRecordResult">
+        <include refid="selectTreatmentRecordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTreatmentRecord" parameterType="TreatmentRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into treatment_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="treatmentIds != null  and treatmentIds != ''">treatment_ids,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="treatmentIds != null  and treatmentIds != ''">#{treatmentIds},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTreatmentRecord" parameterType="TreatmentRecord">
+        update treatment_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="treatmentIds != null  and treatmentIds != ''">treatment_ids = #{treatmentIds},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTreatmentRecordById" parameterType="Long">
+        delete from treatment_record where id = #{id}
+    </delete>
+
+    <delete id="deleteTreatmentRecordByIds" parameterType="String">
+        delete from treatment_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

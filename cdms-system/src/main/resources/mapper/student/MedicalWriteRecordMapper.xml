@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qx.student.mapper.MedicalWriteRecordMapper">
+    
+    <resultMap type="MedicalWriteRecord" id="MedicalWriteRecordResult">
+        <result property="id"    column="id"    />
+        <result property="patientId"    column="patient_id"    />
+        <result property="department"    column="department"    />
+        <result property="bedNo"    column="bed_no"    />
+        <result property="hospitalNo"    column="hospital_no"    />
+        <result property="reliable"    column="reliable"    />
+        <result property="chiefComplaint"    column="chief_complaint"    />
+        <result property="hpi"    column="hpi"    />
+        <result property="pastHistory"    column="past_history"    />
+        <result property="personalHistory"    column="personal_history"    />
+        <result property="mmch"    column="mmch"    />
+        <result property="familyHistory"    column="family_history"    />
+        <result property="tgCheck"    column="tg_check"    />
+        <result property="jsCheck"    column="js_check"    />
+        <result property="fzCheck"    column="fz_check"    />
+        <result property="primaryDiagnosis"    column="primary_diagnosis"    />
+        <result property="superiorDoctor"    column="superior_doctor"    />
+        <result property="residentDoctor"    column="resident_doctor"    />
+    </resultMap>
+
+    <sql id="selectMedicalWriteRecordVo">
+        select id, patient_id, department, bed_no, hospital_no, reliable, chief_complaint, hpi, past_history, personal_history, mmch, family_history, tg_check, js_check, fz_check, primary_diagnosis, superior_doctor, resident_doctor from medical_write_record
+    </sql>
+
+    <select id="selectMedicalWriteRecordList" parameterType="MedicalWriteRecord" resultMap="MedicalWriteRecordResult">
+        <include refid="selectMedicalWriteRecordVo"/>
+        <where>  
+            <if test="patientId != null "> and patient_id = #{patientId}</if>
+            <if test="department != null  and department != ''"> and department = #{department}</if>
+            <if test="bedNo != null  and bedNo != ''"> and bed_no = #{bedNo}</if>
+            <if test="hospitalNo != null  and hospitalNo != ''"> and hospital_no = #{hospitalNo}</if>
+            <if test="reliable != null  and reliable != ''"> and reliable = #{reliable}</if>
+            <if test="chiefComplaint != null  and chiefComplaint != ''"> and chief_complaint = #{chiefComplaint}</if>
+            <if test="hpi != null  and hpi != ''"> and hpi = #{hpi}</if>
+            <if test="pastHistory != null  and pastHistory != ''"> and past_history = #{pastHistory}</if>
+            <if test="personalHistory != null  and personalHistory != ''"> and personal_history = #{personalHistory}</if>
+            <if test="mmch != null  and mmch != ''"> and mmch = #{mmch}</if>
+            <if test="familyHistory != null  and familyHistory != ''"> and family_history = #{familyHistory}</if>
+            <if test="tgCheck != null  and tgCheck != ''"> and tg_check = #{tgCheck}</if>
+            <if test="jsCheck != null  and jsCheck != ''"> and js_check = #{jsCheck}</if>
+            <if test="fzCheck != null  and fzCheck != ''"> and fz_check = #{fzCheck}</if>
+            <if test="primaryDiagnosis != null  and primaryDiagnosis != ''"> and primary_diagnosis = #{primaryDiagnosis}</if>
+            <if test="superiorDoctor != null  and superiorDoctor != ''"> and superior_doctor = #{superiorDoctor}</if>
+            <if test="residentDoctor != null  and residentDoctor != ''"> and resident_doctor = #{residentDoctor}</if>
+        </where>
+    </select>
+    
+    <select id="selectMedicalWriteRecordById" parameterType="Long" resultMap="MedicalWriteRecordResult">
+        <include refid="selectMedicalWriteRecordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMedicalWriteRecord" parameterType="MedicalWriteRecord">
+        insert into medical_write_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="patientId != null ">patient_id,</if>
+            <if test="department != null  and department != ''">department,</if>
+            <if test="bedNo != null  and bedNo != ''">bed_no,</if>
+            <if test="hospitalNo != null  and hospitalNo != ''">hospital_no,</if>
+            <if test="reliable != null  and reliable != ''">reliable,</if>
+            <if test="chiefComplaint != null  and chiefComplaint != ''">chief_complaint,</if>
+            <if test="hpi != null  and hpi != ''">hpi,</if>
+            <if test="pastHistory != null  and pastHistory != ''">past_history,</if>
+            <if test="personalHistory != null  and personalHistory != ''">personal_history,</if>
+            <if test="mmch != null  and mmch != ''">mmch,</if>
+            <if test="familyHistory != null  and familyHistory != ''">family_history,</if>
+            <if test="tgCheck != null  and tgCheck != ''">tg_check,</if>
+            <if test="jsCheck != null  and jsCheck != ''">js_check,</if>
+            <if test="fzCheck != null  and fzCheck != ''">fz_check,</if>
+            <if test="primaryDiagnosis != null  and primaryDiagnosis != ''">primary_diagnosis,</if>
+            <if test="superiorDoctor != null  and superiorDoctor != ''">superior_doctor,</if>
+            <if test="residentDoctor != null  and residentDoctor != ''">resident_doctor,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="patientId != null ">#{patientId},</if>
+            <if test="department != null  and department != ''">#{department},</if>
+            <if test="bedNo != null  and bedNo != ''">#{bedNo},</if>
+            <if test="hospitalNo != null  and hospitalNo != ''">#{hospitalNo},</if>
+            <if test="reliable != null  and reliable != ''">#{reliable},</if>
+            <if test="chiefComplaint != null  and chiefComplaint != ''">#{chiefComplaint},</if>
+            <if test="hpi != null  and hpi != ''">#{hpi},</if>
+            <if test="pastHistory != null  and pastHistory != ''">#{pastHistory},</if>
+            <if test="personalHistory != null  and personalHistory != ''">#{personalHistory},</if>
+            <if test="mmch != null  and mmch != ''">#{mmch},</if>
+            <if test="familyHistory != null  and familyHistory != ''">#{familyHistory},</if>
+            <if test="tgCheck != null  and tgCheck != ''">#{tgCheck},</if>
+            <if test="jsCheck != null  and jsCheck != ''">#{jsCheck},</if>
+            <if test="fzCheck != null  and fzCheck != ''">#{fzCheck},</if>
+            <if test="primaryDiagnosis != null  and primaryDiagnosis != ''">#{primaryDiagnosis},</if>
+            <if test="superiorDoctor != null  and superiorDoctor != ''">#{superiorDoctor},</if>
+            <if test="residentDoctor != null  and residentDoctor != ''">#{residentDoctor},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMedicalWriteRecord" parameterType="MedicalWriteRecord">
+        update medical_write_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="patientId != null ">patient_id = #{patientId},</if>
+            <if test="department != null  and department != ''">department = #{department},</if>
+            <if test="bedNo != null  and bedNo != ''">bed_no = #{bedNo},</if>
+            <if test="hospitalNo != null  and hospitalNo != ''">hospital_no = #{hospitalNo},</if>
+            <if test="reliable != null  and reliable != ''">reliable = #{reliable},</if>
+            <if test="chiefComplaint != null  and chiefComplaint != ''">chief_complaint = #{chiefComplaint},</if>
+            <if test="hpi != null  and hpi != ''">hpi = #{hpi},</if>
+            <if test="pastHistory != null  and pastHistory != ''">past_history = #{pastHistory},</if>
+            <if test="personalHistory != null  and personalHistory != ''">personal_history = #{personalHistory},</if>
+            <if test="mmch != null  and mmch != ''">mmch = #{mmch},</if>
+            <if test="familyHistory != null  and familyHistory != ''">family_history = #{familyHistory},</if>
+            <if test="tgCheck != null  and tgCheck != ''">tg_check = #{tgCheck},</if>
+            <if test="jsCheck != null  and jsCheck != ''">js_check = #{jsCheck},</if>
+            <if test="fzCheck != null  and fzCheck != ''">fz_check = #{fzCheck},</if>
+            <if test="primaryDiagnosis != null  and primaryDiagnosis != ''">primary_diagnosis = #{primaryDiagnosis},</if>
+            <if test="superiorDoctor != null  and superiorDoctor != ''">superior_doctor = #{superiorDoctor},</if>
+            <if test="residentDoctor != null  and residentDoctor != ''">resident_doctor = #{residentDoctor},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMedicalWriteRecordById" parameterType="Long">
+        delete from medical_write_record where id = #{id}
+    </delete>
+
+    <delete id="deleteMedicalWriteRecordByIds" parameterType="String">
+        delete from medical_write_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

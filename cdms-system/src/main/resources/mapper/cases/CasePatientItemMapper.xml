@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qx.cases.mapper.CasePatientItemMapper">
+    
+    <resultMap type="CasePatientItem" id="CasePatientItemResult">
+        <result property="patientId"    column="patient_id"    />
+        <result property="itemId"    column="item_id"    />
+        <result property="records"    column="records"    />
+        <result property="recordsImg"    column="records_img"    />
+        <result property="significance"    column="significance"    />
+    </resultMap>
+
+
+    <sql id="selectCasePatientItemVo">
+        select * from case_patient_item
+    </sql>
+
+    <select id="selectCasePatientItemList" parameterType="CasePatientItem" resultMap="CasePatientItemResult">
+        <include refid="selectCasePatientItemVo"/>
+        <where>  
+            <if test="records != null  and records != ''"> and records = #{records}</if>
+            <if test="recordsImg != null  and recordsImg != ''"> and records_img = #{recordsImg}</if>
+            <if test="significance != null  and significance != ''"> and significance = #{significance}</if>
+        </where>
+    </select>
+
+    <select id="selectCasePatientItemById" resultMap="CasePatientItemResult">
+        <include refid="selectCasePatientItemVo"/>
+        where patient_id = #{patientId} and item_id = #{itemId}
+    </select>
+
+    <select id="selectCasePatientItemByIds" resultMap="CasePatientItemResult">
+        <include refid="selectCasePatientItemVo"/>
+        where patient_id = #{patientId} and item_id in
+        <foreach item="itemId" collection="itemIds" open="(" separator="," close=")">
+              #{itemId}
+        </foreach>
+  </select>
+
+<insert id="insertCasePatientItem" parameterType="CasePatientItem">
+    insert into case_patient_item
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        <if test="patientId != null ">patient_id,</if>
+        <if test="itemId != null ">item_id,</if>
+        <if test="records != null  and records != ''">records,</if>
+        <if test="recordsImg != null  and recordsImg != ''">records_img,</if>
+        <if test="significance != null  and significance != ''">significance,</if>
+     </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+        <if test="patientId != null ">#{patientId},</if>
+        <if test="itemId != null ">#{itemId},</if>
+        <if test="records != null  and records != ''">#{records},</if>
+        <if test="recordsImg != null  and recordsImg != ''">#{recordsImg},</if>
+        <if test="significance != null  and significance != ''">#{significance},</if>
+     </trim>
+</insert>
+
+<update id="updateCasePatientItem" parameterType="CasePatientItem">
+    update case_patient_item
+    <trim prefix="SET" suffixOverrides=",">
+        <if test="records != null  and records != ''">records = #{records},</if>
+        <if test="significance != null  and significance != ''">significance = #{significance},</if>
+        <if test="recordsImg != null  and recordsImg != ''">records_img = #{recordsImg},</if>
+    </trim>
+    where patient_id = #{patientId} and item_id = #{itemId}
+</update>
+
+<delete id="deleteCasePatientItem" parameterType="Long">
+    delete from case_patient_item where patient_id = #{patientId} and item_id = #{itemId}
+</delete>
+
+<!--<delete id="deleteCasePatientItemByIds" parameterType="String">-->
+        <!--delete from case_patient_item where patient_id in -->
+        <!--<foreach item="patientId" collection="array" open="(" separator="," close=")">-->
+            <!--#{patientId}-->
+        <!--</foreach>-->
+    <!--</delete>-->
+    
+</mapper>

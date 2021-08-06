@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qx.cases.mapper.CaseImpMapper">
+    
+    <resultMap type="CaseImp" id="CaseImpResult">
+        <result property="impId"    column="imp_id"    />
+        <result property="impName"    column="imp_name"    />
+        <result property="impBasis"    column="imp_basis"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectCaseImpVo">
+        select imp_id, imp_name, imp_basis, create_by, create_time, update_by, update_time from case_imp
+    </sql>
+
+    <select id="selectCaseImpList" parameterType="CaseImp" resultMap="CaseImpResult">
+        <include refid="selectCaseImpVo"/>
+        <where>  
+            <if test="impName != null  and impName != ''"> and imp_name like concat('%', #{impName}, '%')</if>
+            <if test="impBasis != null  and impBasis != ''"> and imp_basis like concat('%', #{impBasis}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectCaseImpById" parameterType="Long" resultMap="CaseImpResult">
+        <include refid="selectCaseImpVo"/>
+        where imp_id = #{impId}
+    </select>
+        
+    <insert id="insertCaseImp" parameterType="CaseImp">
+        insert into case_imp
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="impId != null ">imp_id,</if>
+            <if test="impName != null  and impName != ''">imp_name,</if>
+            <if test="impBasis != null  and impBasis != ''">imp_basis,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="impId != null ">#{impId},</if>
+            <if test="impName != null  and impName != ''">#{impName},</if>
+            <if test="impBasis != null  and impBasis != ''">#{impBasis},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCaseImp" parameterType="CaseImp">
+        update case_imp
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="impName != null  and impName != ''">imp_name = #{impName},</if>
+            <if test="impBasis != null  and impBasis != ''">imp_basis = #{impBasis},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where imp_id = #{impId}
+    </update>
+
+    <delete id="deleteCaseImpById" parameterType="Long">
+        delete from case_imp where imp_id = #{impId}
+    </delete>
+
+    <delete id="deleteCaseImpByIds" parameterType="String">
+        delete from case_imp where imp_id in 
+        <foreach item="impId" collection="array" open="(" separator="," close=")">
+            #{impId}
+        </foreach>
+    </delete>
+    
+</mapper>

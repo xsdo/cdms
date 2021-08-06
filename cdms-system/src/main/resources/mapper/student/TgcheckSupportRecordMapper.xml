@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qx.student.mapper.TgcheckSupportRecordMapper">
+    
+    <resultMap type="TgcheckSupportRecord" id="TgcheckSupportRecordResult">
+        <result property="id"    column="id"    />
+        <result property="checkRecordId"    column="check_record_id"    />
+        <result property="itemId"    column="item_id"    />
+        <result property="support"    column="support"    />
+        <association property="item" resultMap="CaseCheckItemResult" javaType="CaseCheckItem" />
+    </resultMap>
+
+    <resultMap type="CaseCheckItem" id="CaseCheckItemResult">
+        <result property="itemId"    column="item_id"    />
+        <result property="itemName"    column="item_name"    />
+        <result property="pid"    column="pid"    />
+        <result property="category"    column="category"    />
+        <result property="records"    column="records"    />
+        <result property="significance"    column="significance"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTgcheckSupportRecordVo">
+        select a.id, a.check_record_id, a.item_id, a.support,
+          c.item_name
+          from tgcheck_support_record a
+            left join case_check_item c on a.item_id=c.item_id
+    </sql>
+
+    <select id="selectTgcheckSupportRecordList" parameterType="TgcheckSupportRecord" resultMap="TgcheckSupportRecordResult">
+        <include refid="selectTgcheckSupportRecordVo"/>
+        <where>
+            <if test="checkRecordId != null "> and a.check_record_id = #{checkRecordId}</if>
+            <if test="itemId != null "> and a.item_id = #{itemId}</if>
+            <if test="support != null  and support != ''"> and a.support = #{support}</if>
+        </where>
+
+    </select>
+    
+    <select id="selectTgcheckSupportRecordById" parameterType="Long" resultMap="TgcheckSupportRecordResult">
+        <include refid="selectTgcheckSupportRecordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTgcheckSupportRecord" parameterType="TgcheckSupportRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into tgcheck_support_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="checkRecordId != null ">check_record_id,</if>
+            <if test="itemId != null ">item_id,</if>
+            <if test="support != null  and support != ''">support,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="checkRecordId != null ">#{checkRecordId},</if>
+            <if test="itemId != null ">#{itemId},</if>
+            <if test="support != null  and support != ''">#{support},</if>
+         </trim>
+    </insert>
+    <insert id="insertTgcheckSupportRecordByList" parameterType="list" useGeneratedKeys="true" keyProperty="id">
+        insert into tgcheck_support_record(check_record_id,item_id)
+          VALUES
+            <foreach collection="list" item="record" separator=",">
+                (#{record.checkRecordId},#{record.itemId})
+            </foreach>
+    </insert>
+    <update id="updateTgcheckSupportRecord" parameterType="TgcheckSupportRecord">
+        update tgcheck_support_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="checkRecordId != null ">check_record_id = #{checkRecordId},</if>
+            <if test="itemId != null ">item_id = #{itemId},</if>
+            <if test="support != null  and support != ''">support = #{support},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateTgcheckSupportRecordBatch" parameterType="java.util.List">
+        update tgcheck_support_record
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="support =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.support}
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.id,jdbcType=BIGINT}
+        </foreach>
+    </update>
+
+    <delete id="deleteTgcheckSupportRecordById" parameterType="Long">
+        delete from tgcheck_support_record where id = #{id}
+    </delete>
+
+    <delete id="deleteTgcheckSupportRecordByIds" parameterType="String">
+        delete from tgcheck_support_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

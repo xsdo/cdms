@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qx.student.mapper.FzCheckRecordMapper">
+    
+    <resultMap type="FzCheckRecord" id="FzCheckRecordResult">
+        <result property="id"    column="id"    />
+        <result property="itemIds"    column="item_ids"    />
+    </resultMap>
+
+    <sql id="selectFzCheckRecordVo">
+        select id, item_ids from fz_check_record
+    </sql>
+
+    <select id="selectFzCheckRecordList" parameterType="FzCheckRecord" resultMap="FzCheckRecordResult">
+        <include refid="selectFzCheckRecordVo"/>
+        <where>  
+            <if test="itemIds != null  and itemIds != ''"> and item_ids = #{itemIds}</if>
+        </where>
+    </select>
+    
+    <select id="selectFzCheckRecordById" parameterType="Long" resultMap="FzCheckRecordResult">
+        <include refid="selectFzCheckRecordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertFzCheckRecord" parameterType="FzCheckRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into fz_check_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="itemIds != null  and itemIds != ''">item_ids,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="itemIds != null  and itemIds != ''">#{itemIds},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFzCheckRecord" parameterType="FzCheckRecord">
+        update fz_check_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="itemIds != null  and itemIds != ''">item_ids = #{itemIds},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFzCheckRecordById" parameterType="Long">
+        delete from fz_check_record where id = #{id}
+    </delete>
+
+    <delete id="deleteFzCheckRecordByIds" parameterType="String">
+        delete from fz_check_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

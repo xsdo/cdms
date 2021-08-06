@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qx.student.mapper.HistorySupportRecordMapper">
+    
+    <resultMap type="HistorySupportRecord" id="HistorySupportRecordResult">
+        <result property="id"    column="id"    />
+        <result property="historyRecordId"    column="history_record_id"    />
+        <result property="questionId"    column="question_id"    />
+        <result property="support"    column="support"    />
+        <association property="question" javaType="CaseQuestion" resultMap="CaseQuestionResult" />
+
+    </resultMap>
+    <resultMap type="CaseQuestion" id="CaseQuestionResult">
+        <result property="id"    column="id"    />
+        <result property="patientId"    column="patient_id"    />
+        <result property="question"    column="question"    />
+        <result property="answer"    column="answer"    />
+        <result property="typeId"    column="type_id"    />
+        <result property="result"    column="result"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <association property="type" column="type_id" javaType="CaseQuestionType" resultMap="CaseQuestionTypeResult" />
+    </resultMap>
+
+    <resultMap type="CaseQuestionType" id="CaseQuestionTypeResult">
+        <id property="id"    column="id"    />
+        <result property="typeName"    column="type_name"    />
+        <result property="pid"    column="pid"    />
+
+    </resultMap>
+    <sql id="selectHistorySupportRecordVo">
+        select a.id, a.history_record_id, a.question_id, a.support,
+               b.question,b.answer,b.result,b.type_id,
+               c.type_name,c.pid
+          from history_support_record a
+          left join case_question b on a.question_id = b.id
+          left join case_question_type c on b.type_id=c.id
+    </sql>
+
+
+    <select id="selectHistorySupportRecordListByHistoryId" parameterType="Long" resultMap="HistorySupportRecordResult">
+        <include refid="selectHistorySupportRecordVo"/>
+        where history_record_id = #{historyRecordId}
+    </select>
+
+    <select id="selectHistorySupportRecordList" parameterType="HistorySupportRecord" resultMap="HistorySupportRecordResult">
+        <include refid="selectHistorySupportRecordVo"/>
+        <where>  
+            <if test="historyRecordId != null "> and history_record_id = #{historyRecordId}</if>
+            <if test="questionId != null "> and question_id = #{questionId}</if>
+            <if test="support != null  and support != ''"> and support = #{support}</if>
+        </where>
+        group by result order by question_id
+    </select>
+    
+    <select id="selectHistorySupportRecordById" parameterType="Long" resultMap="HistorySupportRecordResult">
+        <include refid="selectHistorySupportRecordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertHistorySupportRecord" parameterType="HistorySupportRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into history_support_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="historyRecordId != null ">history_record_id,</if>
+            <if test="questionId != null ">question_id,</if>
+            <if test="support != null  and support != ''">support,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="historyRecordId != null ">#{historyRecordId},</if>
+            <if test="questionId != null ">#{questionId},</if>
+            <if test="support != null  and support != ''">#{support},</if>
+         </trim>
+    </insert>
+
+    <insert id="insertHistorySupportRecordByList" parameterType="list" useGeneratedKeys="true" keyProperty="id">
+        insert into history_support_record(history_record_id,question_id)
+          values
+            <foreach collection="list" item="record" separator=",">
+                (#{record.historyRecordId},#{record.questionId})
+            </foreach>
+    </insert>
+
+    <update id="updateHistorySupportRecord" parameterType="HistorySupportRecord">
+        update history_support_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="historyRecordId != null ">history_record_id = #{historyRecordId},</if>
+            <if test="questionId != null ">question_id = #{questionId},</if>
+            <if test="support != null  and support != ''">support = #{support},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <update id="updateHistorySupportRecordBatch" parameterType="java.util.List">
+        update history_support_record
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="support =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.support}
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.id,jdbcType=BIGINT}
+        </foreach>
+    </update>
+
+    <delete id="deleteHistorySupportRecordById" parameterType="Long">
+        delete from history_support_record where id = #{id}
+    </delete>
+
+    <delete id="deleteHistorySupportRecordByIds" parameterType="String">
+        delete from history_support_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

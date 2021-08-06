@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qx.student.mapper.ImpRecordMapper">
+    
+    <resultMap type="ImpRecord" id="ImpRecordResult">
+        <result property="id"    column="id"    />
+        <result property="impIds"    column="imp_ids"    />
+        <result property="type"    column="type"    />
+    </resultMap>
+
+    <sql id="selectImpRecordVo">
+        select id, imp_ids, type from imp_record
+    </sql>
+
+    <select id="selectImpRecordList" parameterType="ImpRecord" resultMap="ImpRecordResult">
+        <include refid="selectImpRecordVo"/>
+        <where>  
+            <if test="impIds != null  and impIds != ''"> and imp_ids = #{impIds}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+        </where>
+    </select>
+    
+    <select id="selectImpRecordById" parameterType="Long" resultMap="ImpRecordResult">
+        <include refid="selectImpRecordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertImpRecord" parameterType="ImpRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into imp_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="impIds != null  and impIds != ''">imp_ids,</if>
+            <if test="type != null  and type != ''">type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="impIds != null  and impIds != ''">#{impIds},</if>
+            <if test="type != null  and type != ''">#{type},</if>
+         </trim>
+    </insert>
+
+    <update id="updateImpRecord" parameterType="ImpRecord">
+        update imp_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="impIds != null  and impIds != ''">imp_ids = #{impIds},</if>
+            <if test="type != null  and type != ''">type = #{type},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteImpRecordById" parameterType="Long">
+        delete from imp_record where id = #{id}
+    </delete>
+
+    <delete id="deleteImpRecordByIds" parameterType="String">
+        delete from imp_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qx.cases.mapper.CaseQuestionMapper">
+    
+    <resultMap type="CaseQuestion" id="CaseQuestionResult">
+        <result property="id"    column="id"    />
+        <result property="patientId"    column="patient_id"    />
+        <result property="question"    column="question"    />
+        <result property="answer"    column="answer"    />
+        <result property="typeId"    column="type_id"    />
+        <result property="result"    column="result"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <association property="type" column="type_id" javaType="CaseQuestionType" resultMap="CaseQuestionTypeResult" />
+    </resultMap>
+
+    <resultMap type="CaseQuestionType" id="CaseQuestionTypeResult">
+        <id property="id"    column="id"    />
+        <result property="typeName"    column="type_name"    />
+        <result property="pid"    column="pid"    />
+
+    </resultMap>
+    <sql id="selectCaseQuestionVo">
+        select q.id, q.patient_id, q.question, q.answer, q.type_id, q.result, q.create_by, q.create_time, q.update_by, q.update_time ,
+        t.id,t.pid,t.type_name
+        from case_question q
+        left join case_question_type t on q.type_id = t.id
+
+    </sql>
+
+    <select id="selectCaseQuestionList" parameterType="CaseQuestion" resultMap="CaseQuestionResult">
+        <include refid="selectCaseQuestionVo"/>
+        <where>
+            <if test="patientId != null ">
+                and q.patient_id = #{patientId}</if>
+            <if test="question != null  and question != ''">
+                AND q.question like concat('%', #{question}, '%')
+            </if>
+            <if test="answer != null  and answer != ''">
+                and q.answer like concat('%', #{answer}, '%')</if>
+            <if test="typeId != null ">
+                and q.type_id = #{typeId}</if>
+            <if test="result != null  and result != ''">
+                and q.result like concat('%', #{result}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectCaseQuestionById" parameterType="Long" resultMap="CaseQuestionResult">
+        <include refid="selectCaseQuestionVo"/>
+        where q.id = #{id}
+    </select>
+    <select id="selectCaseQuestionByIds" parameterType="Long" resultMap="CaseQuestionResult">
+        <include refid="selectCaseQuestionVo"/>
+        where q.id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <insert id="insertCaseQuestion" parameterType="CaseQuestion" useGeneratedKeys="true" keyProperty="id">
+        insert into case_question
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="patientId != null  and patientId != ''">patient_id,</if>
+            <if test="question != null  and question != ''">question,</if>
+            <if test="answer != null  and answer != ''">answer,</if>
+            <if test="typeId != null ">type_id,</if>
+            <if test="result != null  and result != ''">result,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="patientId != null  and patientId != ''">#{patientId},</if>
+            <if test="question != null  and question != ''">#{question},</if>
+            <if test="answer != null  and answer != ''">#{answer},</if>
+            <if test="typeId != null ">#{typeId},</if>
+            <if test="result != null  and result != ''">#{result},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCaseQuestion" parameterType="CaseQuestion">
+        update case_question
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="patientId != null  and patientId != ''">patient_id=#{patientId},</if>
+            <if test="question != null  and question != ''">question = #{question},</if>
+            <if test="answer != null  and answer != ''">answer = #{answer},</if>
+            <if test="typeId != null ">type_id = #{typeId},</if>
+            <if test="result != null  and result != ''">result = #{result},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCaseQuestionById" parameterType="Long">
+        delete from case_question where id = #{id}
+    </delete>
+
+    <delete id="deleteCaseQuestionByIds" parameterType="String">
+        delete from case_question where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

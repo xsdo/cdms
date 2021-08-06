@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qx.cases.mapper.CasePatientMapper">
+    
+    <resultMap type="CasePatient" id="CasePatientResult">
+        <result property="id"    column="id"    />
+        <result property="patientName"    column="patient_name"    />
+        <result property="sex"    column="sex"    />
+        <result property="age"    column="age"    />
+        <result property="symptom"    column="symptom"    />
+        <result property="visitDate"    column="visit_date"    />
+        <result property="maritalStatus"    column="marital_status"    />
+        <result property="nation"    column="nation"    />
+        <result property="nativePlace"    column="native_place"    />
+        <result property="occupation"    column="occupation"    />
+        <result property="affiliation"    column="affiliation"    />
+        <result property="home"    column="home"    />
+        <result property="telephone"    column="telephone"    />
+        <result property="payment"    column="payment"    />
+
+        <result property="anamnesis"    column="anamnesis"    />
+        <result property="anamnesisImg"    column="anamnesis_img"    />
+        <result property="declarant"    column="declarant"    />
+        <result property="diagnosis"    column="diagnosis"    />
+        <result property="avatar"    column="avatar"    />
+
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectCasePatientVo">
+        select id, patient_name, sex, age, symptom, visit_date, marital_status, nation, native_place,
+        occupation, affiliation, home, telephone, payment, anamnesis,anamnesis_img, declarant, diagnosis, avatar, create_by, create_time, update_by, update_time from case_patient
+    </sql>
+
+    <select id="selectCasePatientList" parameterType="CasePatient" resultMap="CasePatientResult">
+        <include refid="selectCasePatientVo"/>
+        <where>  
+            <if test="patientName != null  and patientName != ''">
+                and patient_name like concat('%', #{patientName}, '%')</if>
+            <if test="sex != null  and sex != ''">
+                and sex = #{sex}</if>
+            <if test="age != null ">
+                and age = #{age}</if>
+            <if test="symptom != null  and symptom != ''">
+                and symptom like concat('%', #{symptom}, '%') </if>
+            <if test="visitDate != null ">
+                and visit_date = #{visitDate}</if>
+            <if test="maritalStatus != null  and maritalStatus != ''">
+                and marital_status = #{maritalStatus}</if>
+            <if test="nation != null  and nation != ''">
+                and nation like concat('%', #{nation}, '%')</if>
+            <if test="nativePlace != null  and nativePlace != ''">
+                and native_place like concat('%', #{nativePlace}, '%')</if>
+            <if test="occupation != null  and occupation != ''">
+                and occupation like concat('%', #{occupation}, '%')</if>
+            <if test="affiliation != null  and affiliation != ''">
+                and affiliation like concat('%', #{affiliation}, '%')</if>
+            <if test="home != null  and home != ''">
+                and home like concat('%', #{home}, '%')</if>
+            <if test="telephone != null  and telephone != ''">
+                and telephone like concat('%', #{telephone}, '%')</if>
+            <if test="payment != null  and payment != ''">
+                and payment like concat('%', #{payment}, '%')</if>
+            <if test="anamnesis != null  and anamnesis != ''">
+                and anamnesis like concat('%', #{anamnesis}, '%')</if>
+            <if test="declarant != null  and declarant != ''">
+                and declarant like concat('%', #{declarant}, '%')</if>
+            <if test="diagnosis != null  and diagnosis != ''">
+                and diagnosis like concat('%', #{diagnosis}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectCasePatientById" parameterType="Long" resultMap="CasePatientResult">
+        <include refid="selectCasePatientVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCasePatient" parameterType="CasePatient" useGeneratedKeys="true" keyProperty="id">
+        insert into case_patient
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="patientName != null  and patientName != ''">patient_name,</if>
+            <if test="sex != null  and sex != ''">sex,</if>
+            <if test="age != null ">age,</if>
+            <if test="symptom != null  and symptom != ''">symptom,</if>
+            <if test="visitDate != null ">visit_date,</if>
+            <if test="maritalStatus != null  and maritalStatus != ''">marital_status,</if>
+            <if test="nation != null  and nation != ''">nation,</if>
+            <if test="nativePlace != null  and nativePlace != ''">native_place,</if>
+            <if test="occupation != null  and occupation != ''">occupation,</if>
+            <if test="affiliation != null  and affiliation != ''">affiliation,</if>
+            <if test="home != null  and home != ''">home,</if>
+            <if test="telephone != null  and telephone != ''">telephone,</if>
+            <if test="payment != null  and payment != ''">payment,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="anamnesis != null  and anamnesis != ''">anamnesis,</if>
+            <if test="anamnesisImg != null  and anamnesisImg != ''">anamnesis_img,</if>
+            <if test="declarant != null  and declarant != ''">declarant,</if>
+            <if test="diagnosis != null  and diagnosis != ''">diagnosis,</if>
+            <if test="avatar != null  and avatar != ''">avatar,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="patientName != null  and patientName != ''">#{patientName},</if>
+            <if test="sex != null  and sex != ''">#{sex},</if>
+            <if test="age != null ">#{age},</if>
+            <if test="symptom != null  and symptom != ''">#{symptom},</if>
+            <if test="visitDate != null ">#{visitDate},</if>
+            <if test="maritalStatus != null  and maritalStatus != ''">#{maritalStatus},</if>
+            <if test="nation != null  and nation != ''">#{nation},</if>
+            <if test="nativePlace != null  and nativePlace != ''">#{nativePlace},</if>
+            <if test="occupation != null  and occupation != ''">#{occupation},</if>
+            <if test="affiliation != null  and affiliation != ''">#{affiliation},</if>
+            <if test="home != null  and home != ''">#{home},</if>
+            <if test="telephone != null  and telephone != ''">#{telephone},</if>
+            <if test="payment != null  and payment != ''">#{payment},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="anamnesis != null  and anamnesis != ''">#{anamnesis},</if>
+            <if test="anamnesisImg != null  and anamnesisImg != ''">#{anamnesisImg},</if>
+            <if test="declarant != null  and declarant != ''">#{declarant},</if>
+            <if test="diagnosis != null  and declarant != ''">#{diagnosis},</if>
+            <if test="avatar != null  and avatar != ''">#{avatar},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCasePatient" parameterType="CasePatient">
+        update case_patient
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="patientName != null  and patientName != ''">patient_name = #{patientName},</if>
+            <if test="sex != null  and sex != ''">sex = #{sex},</if>
+            <if test="age != null ">age = #{age},</if>
+            <if test="symptom != null  and symptom != ''">symptom = #{symptom},</if>
+            <if test="visitDate != null ">visit_date = #{visitDate},</if>
+            <if test="maritalStatus != null  and maritalStatus != ''">marital_status = #{maritalStatus},</if>
+            <if test="nation != null  and nation != ''">nation = #{nation},</if>
+            <if test="nativePlace != null  and nativePlace != ''">native_place = #{nativePlace},</if>
+            <if test="occupation != null  and occupation != ''">occupation = #{occupation},</if>
+            <if test="affiliation != null  and affiliation != ''">affiliation = #{affiliation},</if>
+            <if test="home != null  and home != ''">home = #{home},</if>
+            <if test="telephone != null  and telephone != ''">telephone = #{telephone},</if>
+            <if test="payment != null  and payment != ''">payment = #{payment},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="anamnesis != null  and anamnesis != ''">anamnesis = #{anamnesis},</if>
+            <if test="anamnesisImg != null  and anamnesisImg != ''">anamnesis_img = #{anamnesisImg},</if>
+            <if test="declarant != null  and declarant != ''">declarant = #{declarant},</if>
+            <if test="diagnosis != null  and diagnosis != ''">diagnosis = #{diagnosis},</if>
+            <if test="avatar != null  and avatar != ''">avatar = #{avatar},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCasePatientById" parameterType="Long">
+        delete from case_patient where id = #{id}
+    </delete>
+
+    <delete id="deleteCasePatientByIds" parameterType="String">
+        delete from case_patient where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

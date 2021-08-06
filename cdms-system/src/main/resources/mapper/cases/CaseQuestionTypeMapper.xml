@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qx.cases.mapper.CaseQuestionTypeMapper">
+    
+    <resultMap type="CaseQuestionType" id="CaseQuestionTypeResult">
+        <result property="id"    column="id"    />
+        <result property="typeName"    column="type_name"    />
+        <result property="pid"    column="pid"    />
+        <result property="createBy"   column="create_by"   />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy"   column="update_by"   />
+        <result property="updateTime" column="update_time" />
+    </resultMap>
+
+    <sql id="selectCaseQuestionTypeVo">
+        select id, type_name, pid,create_by, create_time, update_by, update_time
+        from case_question_type
+    </sql>
+
+    <select id="selectCaseQuestionTypeList" parameterType="CaseQuestionType" resultMap="CaseQuestionTypeResult">
+        <include refid="selectCaseQuestionTypeVo"/>
+        <where>  
+            <if test="typeName != null  and typeName != ''">
+                and type_name like concat('%', #{typeName}, '%')
+            </if>
+
+        </where>
+        order by pid,id
+    </select>
+    
+    <select id="selectCaseQuestionTypeById" parameterType="Long" resultMap="CaseQuestionTypeResult">
+        <include refid="selectCaseQuestionTypeVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="hasChildById" resultType="Integer">
+        select count(1) from case_question_type where pid = #{id}
+    </select>
+
+    <select id="checkTypeExistQuestion"  parameterType="Long" resultType="int">
+        select count(1) from case_question where type_id = #{id}
+
+    </select>
+        
+    <insert id="insertCaseQuestionType" parameterType="CaseQuestionType" useGeneratedKeys="true" keyProperty="id">
+        insert into case_question_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="typeName != null  and typeName != ''">type_name,</if>
+            <if test="pid != null ">pid,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="typeName != null  and typeName != ''">#{typeName},</if>
+            <if test="pid != null ">#{pid},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCaseQuestionType" parameterType="CaseQuestionType">
+        update case_question_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="typeName != null  and typeName != ''">type_name = #{typeName},</if>
+            <if test="pid != null ">pid = #{pid},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCaseQuestionTypeById" parameterType="Long">
+        delete from case_question_type where id = #{id}
+    </delete>
+
+    <delete id="deleteCaseQuestionTypeByIds" parameterType="String">
+        delete from case_question_type where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

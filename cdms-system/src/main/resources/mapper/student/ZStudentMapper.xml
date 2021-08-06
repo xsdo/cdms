@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qx.student.mapper.ZStudentMapper">
+    
+    <resultMap type="ZStudent" id="ZStudentResult">
+        <result property="id"    column="id"    />
+        <result property="stuName"    column="stu_name"    />
+        <result property="sex"    column="sex"    />
+        <result property="classNo"    column="class_no"    />
+        <result property="password"    column="password"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="grade"    column="grade"    />
+        <result property="major"    column="major"    />
+        <result property="age"    column="age"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"      column="del_flag"     />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="sno"    column="sno"    />
+        <association property="dept"    column="dept_id" javaType="SysDept" resultMap="deptResult" />
+    </resultMap>
+    <resultMap id="deptResult" type="SysDept">
+        <id     property="deptId"   column="dept_id"     />
+        <result property="parentId" column="parent_id"   />
+        <result property="deptName" column="dept_name"   />
+        <result property="orderNum" column="order_num"   />
+        <result property="leader"   column="leader"      />
+        <result property="status"   column="dept_status" />
+    </resultMap>
+    <sql id="selectZStudentVo">
+        select s.id, s.stu_name, s.sex, s.class_no, s.password, s.dept_id, s.grade, s.major,
+        s.age, s.status,s.del_flag, s.create_by, s.create_time, s.update_by, s.update_time, s.sno,
+        d.dept_id, d.parent_id, d.dept_name, d.order_num, d.leader, d.status as dept_status
+        from z_student s
+          left join sys_dept d on s.dept_id = d.dept_id
+    </sql>
+
+    <select id="selectZStudentList" parameterType="ZStudent" resultMap="ZStudentResult">
+        <include refid="selectZStudentVo"/>
+        where s.del_flag = '0'
+            <if test="stuName != null  and stuName != ''">
+                and s.stu_name like concat('%', #{stuName}, '%')</if>
+            <if test="sex != null  and sex != ''">
+                and s.sex = #{sex}</if>
+            <if test="classNo != null  and classNo != ''">
+                and s.class_no like concat('%', #{classNo}, '%')</if>
+            <if test="password != null  and password != ''">
+                and s.password like concat('%', #{password}, '%')</if>
+            <if test="deptId != null ">
+                AND (s.dept_id = #{deptId} OR s.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE FIND_IN_SET (#{deptId},ancestors) ))
+            </if>
+            <if test="grade != null  and grade != ''">
+                and s.grade like concat('%', #{grade}, '%')</if>
+            <if test="major != null  and major != ''">
+                and s.major like concat('%', #{major}, '%')</if>
+            <if test="age != null ">
+                and s.age = #{age}</if>
+            <if test="status != null  and status != ''">
+                and s.status = #{status}</if>
+            <if test="sno != null  and sno != ''">
+                and s.sno like concat('%', #{sno}, '%')</if>
+    </select>
+    
+    <select id="selectZStudentById" parameterType="Long" resultMap="ZStudentResult">
+        <include refid="selectZStudentVo"/>
+        where s.id = #{id}
+    </select>
+
+    <select id="selectZStudentBySno" parameterType="String" resultMap="ZStudentResult">
+        <include refid="selectZStudentVo"/>
+        where s.sno = #{sno}
+    </select>
+
+    <select id="checkSnoUnique" parameterType="String" resultType="int">
+        select count(1) from z_student where sno = #{sno}
+    </select>
+    <insert id="insertZStudent" parameterType="ZStudent" useGeneratedKeys="true" keyProperty="id">
+        insert into z_student
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="stuName != null  and stuName != ''">stu_name,</if>
+            <if test="sex != null  and sex != ''">sex,</if>
+            <if test="classNo != null  and classNo != ''">class_no,</if>
+            <if test="password != null  and password != ''">password,</if>
+            <if test="deptId != null ">dept_id,</if>
+            <if test="grade != null  and grade != ''">grade,</if>
+            <if test="major != null  and major != ''">major,</if>
+            <if test="age != null ">age,</if>
+            <if test="status != null  and status != ''">status,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="sno != null  and sno != ''">sno,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="stuName != null  and stuName != ''">#{stuName},</if>
+            <if test="sex != null  and sex != ''">#{sex},</if>
+            <if test="classNo != null  and classNo != ''">#{classNo},</if>
+            <if test="password != null  and password != ''">#{password},</if>
+            <if test="deptId != null ">#{deptId},</if>
+            <if test="grade != null  and grade != ''">#{grade},</if>
+            <if test="major != null  and major != ''">#{major},</if>
+            <if test="age != null ">#{age},</if>
+            <if test="status != null  and status != ''">#{status},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="sno != null  and sno != ''">#{sno},</if>
+         </trim>
+    </insert>
+
+    <update id="updateZStudent" parameterType="ZStudent">
+        update z_student
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="stuName != null  and stuName != ''">stu_name = #{stuName},</if>
+            <if test="sex != null  and sex != ''">sex = #{sex},</if>
+            <if test="classNo != null  and classNo != ''">class_no = #{classNo},</if>
+            <if test="password != null  and password != ''">password = #{password},</if>
+            <if test="deptId != null ">dept_id = #{deptId},</if>
+            <if test="grade != null  and grade != ''">grade = #{grade},</if>
+            <if test="major != null  and major != ''">major = #{major},</if>
+            <if test="age != null ">age = #{age},</if>
+            <if test="status != null  and status != ''">status = #{status},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="sno != null  and sno != ''">sno = #{sno},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="resetStuPwd" parameterType="ZStudent">
+        update z_student set password = #{password} where sno = #{sno}
+    </update>
+
+    <delete id="deleteZStudentById" parameterType="Long">
+        delete from z_student where id = #{id}
+    </delete>
+
+    <delete id="deleteZStudentByIds" parameterType="Long">
+        update z_student set del_flag = '2' where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+    </delete>
+    
+</mapper>

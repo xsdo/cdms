@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>cdms</artifactId>
+    <groupId>com.qx</groupId>
+    <version>1.0</version>
+  </parent>
+  <packaging>jar</packaging>
+  <artifactId>cdms-generator</artifactId>
+
+  <description>
+    generator代码生成
+  </description>
+
+  <dependencies>
+
+    <!--velocity代码生成使用模板 -->
+    <dependency>
+      <groupId>org.apache.velocity</groupId>
+      <artifactId>velocity</artifactId>
+    </dependency>
+
+    <!-- 通用工具-->
+    <dependency>
+      <groupId>com.qx</groupId>
+      <artifactId>cdms-common</artifactId>
+      <version>1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+</project>
