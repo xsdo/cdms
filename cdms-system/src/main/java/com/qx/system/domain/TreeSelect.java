@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.qx.cases.domain.CaseCheckItem;
+import com.qx.cases.domain.CaseImpDiagnosis;
 import com.qx.cases.domain.CaseQuestionType;
 import com.qx.cases.domain.CaseTreatment;
 import com.qx.system.domain.AppCategory;
@@ -83,6 +84,12 @@ public class TreeSelect implements Serializable
         this.label = treatment.getTreatmentName();
         this.children = treatment.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
 
+    }
+
+    public TreeSelect(CaseImpDiagnosis imp) {
+        this.id = imp.getImpId();
+        this.label = imp.getImpName();
+        this.children = imp.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
     }
 
 

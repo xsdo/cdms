@@ -94,6 +94,9 @@ public class caseController extends BaseController {
     @Autowired
     private TokenUtil tokenUtil;
 
+    @Autowired
+    private ICaseImpDiagnosisService caseImpDiagnosisService;
+
 
     /**
      * 查询所有案例患者
@@ -377,7 +380,51 @@ public class caseController extends BaseController {
         ajaxResult.put("fzRecords", fzcheckSupportRecords);
         return ajaxResult;
     }
+    /**
+     * 诊断依据
+     * @param
+     * @param
+     * @return
+     */
+    @GetMapping("/imp/impTreeselect")
+    public AjaxResult impTreeselect(CaseImpDiagnosis caseImpDiagnosis)
+    {
+        List<CaseImpDiagnosis> caseImpDiagnoses =caseImpDiagnosisService.selectCaseImpDiagnosisList(caseImpDiagnosis);
+        return AjaxResult.success(caseImpDiagnosisService.buildImpTreeSelect(caseImpDiagnoses));
+    }
 
+    //@GetMapping("/imp/impTreelist")
+    public AjaxResult impTreelist(CaseImpDiagnosis caseImpDiagnosis)
+    {
+        List<CaseImpDiagnosis> caseImpDiagnoses =caseImpDiagnosisService.selectCaseImpDiagnosisList(caseImpDiagnosis);
+        return AjaxResult.success(caseImpDiagnosisService.buildImpTree(caseImpDiagnoses));
+    }
+
+
+    public AjaxResult listImpChoose(CaseImp imp,Long impId){
+        LoginStudent loginStudent = tokenUtil.getLoginStudent(ServletUtils.getRequest());
+        if (loginStudent==null){
+            String msg = StringUtils.format("请求访问：{}，认证失败，无法访问系统资源", ServletUtils.getRequest().getRequestURI());
+            return AjaxResult.error(HttpStatus.UNAUTHORIZED, msg);        }
+
+        AjaxResult ajaxResult = AjaxResult.success();
+
+        //获取诊断库
+        List<CaseImp> list = caseImpService.selectCaseImpList(imp);
+        ajaxResult.put("imps",list);
+        ImpRecord impRecord = null;
+        if (impId!=null && !"".equals(impId)){
+
+            StudentTrainRecord studentTrainRecord = studentTrainRecordService.selectStudentTrainRecordById(impId);
+            //获取诊断数据
+            if (studentTrainRecord !=null && studentTrainRecord.getImpRecordId() !=null && !"".equals(studentTrainRecord.getImpRecordId())) {
+                impRecord = impRecordService.selectImpRecordById(studentTrainRecord.getImpRecordId());
+            }
+
+        }
+        ajaxResult.put("impRecord", impRecord);
+        return ajaxResult;
+    }
     /**
      * 治疗
      * @param treatment

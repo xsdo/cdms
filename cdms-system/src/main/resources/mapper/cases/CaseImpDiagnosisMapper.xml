@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qx.cases.mapper.CaseImpDiagnosisMapper">
+    
+    <resultMap type="CaseImpDiagnosis" id="CaseImpDiagnosisResult">
+        <result property="impId"    column="imp_id"    />
+        <result property="impName"    column="imp_name"    />
+        <result property="pid"    column="pid"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectCaseImpDiagnosisVo">
+        select imp_id, imp_name, pid, create_by, create_time, update_by, update_time from case_imp_diagnosis
+    </sql>
+
+    <select id="selectCaseImpDiagnosisList" parameterType="CaseImpDiagnosis" resultMap="CaseImpDiagnosisResult">
+        <include refid="selectCaseImpDiagnosisVo"/>
+        <where>  
+            <if test="impName != null  and impName != ''"> and imp_name like concat('%', #{impName}, '%')</if>
+            <if test="pid != null "> and pid = #{pid}</if>
+        </where>
+    </select>
+
+    <select id="selectCaseImpDiagnosisById" parameterType="Long" resultMap="CaseImpDiagnosisResult">
+        <include refid="selectCaseImpDiagnosisVo"/>
+        where imp_id = #{impId}
+    </select>
+    <select id="selectCaseImpDiagnosisByIds" parameterType="Long" resultMap="CaseImpDiagnosisResult">
+        <include refid="selectCaseImpDiagnosisVo"/>
+        where imp_id in
+        <foreach collection="array" item="impId" open="(" separator="," close=")">
+            #{impId}
+        </foreach>
+    </select>
+        
+    <insert id="insertCaseImpDiagnosis" parameterType="CaseImpDiagnosis" useGeneratedKeys="true" keyProperty="impId">
+        insert into case_imp_diagnosis
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="impName != null  and impName != ''">imp_name,</if>
+            <if test="pid != null ">pid,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="impName != null  and impName != ''">#{impName},</if>
+            <if test="pid != null ">#{pid},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCaseImpDiagnosis" parameterType="CaseImpDiagnosis">
+        update case_imp_diagnosis
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="impName != null  and impName != ''">imp_name = #{impName},</if>
+            <if test="pid != null ">pid = #{pid},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where imp_id = #{impId}
+    </update>
+
+    <delete id="deleteCaseImpDiagnosisById" parameterType="Long">
+        delete from case_imp_diagnosis where imp_id = #{impId}
+    </delete>
+
+    <delete id="deleteCaseImpDiagnosisByIds" parameterType="String">
+        delete from case_imp_diagnosis where imp_id in
+        <foreach item="impId" collection="array" open="(" separator="," close=")">
+            #{impId}
+        </foreach>
+    </delete>
+
+    <select id="hasChildById" resultType="Integer">
+        select count(1) from case_imp_diagnosis where pid = #{impId}
+    </select>
+    
+</mapper>
