@@ -1,8 +1,8 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : 127.0.0.1
-Source Server Version : 50540
+Source Server         : 本地库
+Source Server Version : 50732
 Source Host           : localhost:3306
 Source Database       : cdms
 
@@ -16,7 +16,7 @@ Date: 2021-06-23 17:39:17
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for act_evt_log
+-- Table structure for `act_evt_log`
 -- ----------------------------
 DROP TABLE IF EXISTS `act_evt_log`;
 CREATE TABLE `act_evt_log` (
