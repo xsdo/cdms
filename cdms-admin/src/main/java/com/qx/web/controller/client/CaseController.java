@@ -36,7 +36,7 @@ import java.util.Map;
 @Api( tags = "标准化病例相关接口")
 @RestController
 @RequestMapping("/client/case")
-public class caseController extends BaseController {
+public class CaseController extends BaseController {
 
     @Autowired
     private ISysDictDataService sysDictDataService;
@@ -382,7 +382,6 @@ public class caseController extends BaseController {
     }
     /**
      * 诊断依据
-     * @param
      * @param
      * @return
      */
