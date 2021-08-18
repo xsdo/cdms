@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qx.cases.mapper.CaseImpLearningMapper">
+    
+    <resultMap type="CaseImpLearning" id="CaseImpLearningResult">
+        <result property="learningId"    column="learning_id"    />
+        <result property="learningName"    column="learning_name"    />
+        <result property="pid"    column="pid"    />
+        <result property="result"    column="result"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectCaseImpLearningVo">
+        select learning_id, learning_name, pid, result, create_by, create_time, update_by, update_time from case_imp_learning
+    </sql>
+
+    <select id="selectCaseImpLearningList" parameterType="CaseImpLearning" resultMap="CaseImpLearningResult">
+        <include refid="selectCaseImpLearningVo"/>
+        <where>  
+            <if test="learningName != null  and learningName != ''"> and learning_name like concat('%', #{learningName}, '%')</if>
+            <if test="pid != null "> and pid = #{pid}</if>
+            <if test="result != null  and result != ''"> and result = #{result}</if>
+        </where>
+    </select>
+    
+    <select id="selectCaseImpLearningById" parameterType="Long" resultMap="CaseImpLearningResult">
+        <include refid="selectCaseImpLearningVo"/>
+        where learning_id = #{learningId}
+    </select>
+
+    <select id="selectCaseImpLearningByIds" parameterType="Long" resultMap="CaseImpLearningResult">
+        <include refid="selectCaseImpLearningVo"/>
+        where learning_id in
+        <foreach collection="array" item="learningId" open="(" separator="," close=")">
+            #{learningId}
+        </foreach>
+    </select>
+    <insert id="insertCaseImpLearning" parameterType="CaseImpLearning" useGeneratedKeys="true" keyProperty="learningId">
+        insert into case_imp_learning
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="learningName != null  and learningName != ''">learning_name,</if>
+            <if test="pid != null ">pid,</if>
+            <if test="result != null  and result != ''">result,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="learningName != null  and learningName != ''">#{learningName},</if>
+            <if test="pid != null ">#{pid},</if>
+            <if test="result != null  and result != ''">#{result},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCaseImpLearning" parameterType="CaseImpLearning">
+        update case_imp_learning
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="learningName != null  and learningName != ''">learning_name = #{learningName},</if>
+            <if test="pid != null ">pid = #{pid},</if>
+            <if test="result != null  and result != ''">result = #{result},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where learning_id = #{learningId}
+    </update>
+
+    <delete id="deleteCaseImpLearningById" parameterType="Long">
+        delete from case_imp_learning where learning_id = #{learningId}
+    </delete>
+
+    <delete id="deleteCaseImpLearningByIds" parameterType="String">
+        delete from case_imp_learning where learning_id in 
+        <foreach item="learningId" collection="array" open="(" separator="," close=")">
+            #{learningId}
+        </foreach>
+    </delete>
+
+    <select id="hasChildById" resultType="Integer">
+        select count(1) from case_imp_learning where pid = #{learningId}
+    </select>
+    
+</mapper>

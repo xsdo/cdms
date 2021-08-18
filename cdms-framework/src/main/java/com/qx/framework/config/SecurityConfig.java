@@ -82,6 +82,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .antMatchers("/druid/**").anonymous()
                // .antMatchers("/client/**").anonymous()
                 .antMatchers("/client/**").permitAll()
+                .antMatchers("/learning/**").permitAll()
 //                .antMatchers("/client/student/login").anonymous()
 //                .antMatchers("/client/student/logout").anonymous()
                 .anyRequest().authenticated()

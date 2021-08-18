@@ -4,10 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.qx.cases.domain.CaseCheckItem;
-import com.qx.cases.domain.CaseImpDiagnosis;
-import com.qx.cases.domain.CaseQuestionType;
-import com.qx.cases.domain.CaseTreatment;
+import com.qx.cases.domain.*;
 import com.qx.system.domain.AppCategory;
 import com.qx.system.domain.AppRegion;
 
@@ -26,6 +23,9 @@ public class TreeSelect implements Serializable
 
     /** 节点名称 */
     private String label;
+
+    //详细信息
+    private String result;
 
     /** 层级 */
     private String level;
@@ -91,6 +91,12 @@ public class TreeSelect implements Serializable
         this.label = imp.getImpName();
         this.children = imp.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
     }
+    public TreeSelect(CaseImpLearning learning) {
+        this.id = learning.getLearningId();
+        this.label = learning.getLearningName();
+        this.result =learning.getResult();
+        this.children = learning.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
+    }
 
 
     public Long getId()
@@ -129,5 +135,13 @@ public class TreeSelect implements Serializable
     public void setChildren(List<TreeSelect> children)
     {
         this.children = children;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
     }
 }

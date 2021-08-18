@@ -57,7 +57,11 @@ public class HistoryTakingRecordServiceImpl implements IHistoryTakingRecordServi
         List<CaseQuestion> list = new ArrayList<>();
         List<HistorySupportRecord> historySupportRecords = historySupportRecordService.selectHistorySupportRecordListByHistoryId(id);
         for (HistorySupportRecord record:historySupportRecords){
-            list.add(record.getQuestion());
+            CaseQuestion cqs =record.getQuestion();
+            cqs.setId(record.getQuestionId());
+            //record.setId(record.getQuestionId());
+            //list.add(record.getQuestion());
+            list.add(cqs);
         }
 //        List<CaseQuestion> list1 = caseQuestionService.selectCaseQuestionByIds(questionIds);
         List<CaseQuestion> questionList = caseQuestionService.selectCaseQuestionListType(list);
