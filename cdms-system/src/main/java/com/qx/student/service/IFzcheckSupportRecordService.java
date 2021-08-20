@@ -76,6 +76,15 @@ public interface IFzcheckSupportRecordService
     List<FzcheckSupportRecord> selectFzcheckSupportRecordList1(Long patientId, FzcheckSupportRecord fzcheckSupportRecord);
 
     /**
+     * 查询辅助检查项目支持记录列表-连接查询（核心）
+     *
+     * @param fzcheckSupportRecord 辅助检查项目支持记录
+     * @param patientId 案例患者id
+     * @return 辅助检查项目支持记录集合
+     */
+    List<FzcheckSupportRecord> selectFzcheckSupportRecordListCore(Long patientId, FzcheckSupportRecord fzcheckSupportRecord);
+
+    /**
      * 批量更新
      * @param list
      * @return

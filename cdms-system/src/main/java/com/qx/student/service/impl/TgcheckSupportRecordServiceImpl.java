@@ -1,5 +1,6 @@
 package com.qx.student.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.qx.cases.domain.CasePatientItem;
@@ -68,6 +69,33 @@ public class TgcheckSupportRecordServiceImpl implements ITgcheckSupportRecordSer
             }
         }
         return tgcheckSupportRecords;
+    }
+    /**
+     * 查询体格检查项目支持记录列表-联合查询(核心)
+     *
+     * @param tgcheckSupportRecord 体格检查项目支持记录
+     * @param patientId 案例id
+     * @return 体格检查项目支持记录
+     */
+    @Override
+    public List<TgcheckSupportRecord> selectTgcheckSupportRecordListCore(Long patientId, TgcheckSupportRecord tgcheckSupportRecord)
+    {
+        List<TgcheckSupportRecord> tgcheckSupportRecordList =new ArrayList<>();
+        List<TgcheckSupportRecord> tgcheckSupportRecords = tgcheckSupportRecordMapper.selectTgcheckSupportRecordList(tgcheckSupportRecord);
+        for (TgcheckSupportRecord record:tgcheckSupportRecords){
+
+            CasePatientItem patientItem = casePatientItemService.selectCasePatientItemByCore(patientId, record.getItemId());
+            if (patientItem!=null){
+                if (patientItem.getIsCore()==1){
+                    //获取该案例下对应的检查项目数据
+                    record.getItem().setPatientItem(patientItem);
+                    if (record!=null){
+                        tgcheckSupportRecordList.add(record);
+                    }
+                }
+            }
+        }
+        return tgcheckSupportRecordList;
     }
     /**
      * 新增体格检查项目支持记录

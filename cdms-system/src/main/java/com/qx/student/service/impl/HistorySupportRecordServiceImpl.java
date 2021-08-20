@@ -44,6 +44,17 @@ public class HistorySupportRecordServiceImpl implements IHistorySupportRecordSer
     }
 
     /**
+     * 查询病史采集问题支持记录列表（核心）
+     *
+     * @param historySupportRecord 病史采集问题支持记录
+     * @return 病史采集问题支持记录
+     */
+    @Override
+    public List<HistorySupportRecord> selectHistorySupportRecordListCore(HistorySupportRecord historySupportRecord)
+    {
+        return historySupportRecordMapper.selectHistorySupportRecordListCore(historySupportRecord);
+    }
+    /**
      * 新增病史采集问题支持记录
      * 
      * @param historySupportRecord 病史采集问题支持记录

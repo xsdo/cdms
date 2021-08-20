@@ -29,6 +29,14 @@ public interface HistorySupportRecordMapper
 
 
     /**
+     * 查询病史采集问题支持记录列表 （核心）
+     *
+     * @param historySupportRecord 病史采集问题支持记录
+     * @return 病史采集问题支持记录集合
+     */
+    public List<HistorySupportRecord> selectHistorySupportRecordListCore(HistorySupportRecord historySupportRecord);
+
+    /**
      * 查询病史采集问题支持记录列表
      *
      * @param historyRecordId 病史采集记录id

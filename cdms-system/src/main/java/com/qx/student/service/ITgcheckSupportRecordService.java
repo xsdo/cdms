@@ -37,6 +37,15 @@ public interface ITgcheckSupportRecordService
     public List<TgcheckSupportRecord> selectTgcheckSupportRecordList1(Long patientId,TgcheckSupportRecord tgcheckSupportRecord);
 
     /**
+     * 查询体格检查项目支持记录列表（核心）
+     *
+     * @param tgcheckSupportRecord 体格检查项目支持记录
+     * @param patientId 案例患者id
+     * @return 体格检查项目支持记录集合
+     */
+    List<TgcheckSupportRecord> selectTgcheckSupportRecordListCore(Long patientId, TgcheckSupportRecord tgcheckSupportRecord);
+
+    /**
      * 新增体格检查项目支持记录
      * 
      * @param tgcheckSupportRecord 体格检查项目支持记录

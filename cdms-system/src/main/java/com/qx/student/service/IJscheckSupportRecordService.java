@@ -76,6 +76,15 @@ public interface IJscheckSupportRecordService
     List<JscheckSupportRecord> selectJscheckSupportRecordList1(Long patientId, JscheckSupportRecord jscheckSupportRecord);
 
     /**
+     * 查询精神检查项目支持记录列表-联合查询（核心）
+     *
+     * @param jscheckSupportRecord 精神检查项目支持记录
+     * @param patientId 案例患者id
+     * @return 精神检查项目支持记录集合
+     */
+    List<JscheckSupportRecord> selectJscheckSupportRecordListCore(Long patientId, JscheckSupportRecord jscheckSupportRecord);
+
+    /**
      * 批量更新
      * @param list
      * @return

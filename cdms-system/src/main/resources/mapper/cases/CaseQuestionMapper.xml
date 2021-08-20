@@ -11,6 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="answer"    column="answer"    />
         <result property="typeId"    column="type_id"    />
         <result property="result"    column="result"    />
+        <result property="isCore"    column="isCore"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -25,7 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     </resultMap>
     <sql id="selectCaseQuestionVo">
-        select q.id, q.patient_id, q.question, q.answer, q.type_id, q.result, q.create_by, q.create_time, q.update_by, q.update_time ,
+        select q.id, q.patient_id, q.question, q.answer, q.type_id, q.result, q.isCore, q.create_by, q.create_time, q.update_by, q.update_time ,
         t.id,t.pid,t.type_name
         from case_question q
         left join case_question_type t on q.type_id = t.id
@@ -46,6 +47,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 and q.type_id = #{typeId}</if>
             <if test="result != null  and result != ''">
                 and q.result like concat('%', #{result}, '%')</if>
+            <if test="isCore != null ">
+                and q.isCore = #{isCore}</if>
         </where>
     </select>
     
@@ -70,6 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="answer != null  and answer != ''">answer,</if>
             <if test="typeId != null ">type_id,</if>
             <if test="result != null  and result != ''">result,</if>
+            <if test="isCore != null  and isCore != ''">isCore,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             <if test="createTime != null ">create_time,</if>
             <if test="updateBy != null  and updateBy != ''">update_by,</if>
@@ -81,6 +85,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="answer != null  and answer != ''">#{answer},</if>
             <if test="typeId != null ">#{typeId},</if>
             <if test="result != null  and result != ''">#{result},</if>
+            <if test="isCore != null  and isCore != ''">#{isCore},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             <if test="createTime != null ">#{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
@@ -96,6 +101,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="answer != null  and answer != ''">answer = #{answer},</if>
             <if test="typeId != null ">type_id = #{typeId},</if>
             <if test="result != null  and result != ''">result = #{result},</if>
+            <if test="isCore != null  and isCore != ''">isCore = #{isCore},</if>
             <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>

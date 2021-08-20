@@ -380,6 +380,77 @@ public class CaseController extends BaseController {
         ajaxResult.put("fzRecords", fzcheckSupportRecords);
         return ajaxResult;
     }
+
+    /**
+     * 诊断(仅核心项目)
+     * @param imp
+     * @param recordId
+     * @return
+     */
+    @ApiOperation("诊断")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "imp", value = "诊断",  dataType = "CaseImp"),
+            @ApiImplicitParam(name = "recordId", value = "学生训练记录id", dataType = "Long")
+    })
+    @GetMapping("/impCore")
+    public AjaxResult listImpCore(CaseImp imp,Long recordId){
+        LoginStudent loginStudent = tokenUtil.getLoginStudent(ServletUtils.getRequest());
+        if (loginStudent==null){
+            String msg = StringUtils.format("请求访问：{}，认证失败，无法访问系统资源", ServletUtils.getRequest().getRequestURI());
+            return AjaxResult.error(HttpStatus.UNAUTHORIZED, msg);        }
+
+        AjaxResult ajaxResult = AjaxResult.success();
+
+        //获取诊断库
+        List<CaseImp> list = caseImpService.selectCaseImpList(imp);
+        ajaxResult.put("imps",list);
+
+        //获取学生诊断记录
+        List<HistorySupportRecord> historySupportRecords = null;
+        List<TgcheckSupportRecord> tgcheckSupportRecords = null;
+        List<JscheckSupportRecord> jscheckSupportRecords = null;
+        List<FzcheckSupportRecord> fzcheckSupportRecords = null;
+        ImpRecord impRecord = null;
+        if (recordId!=null && !"".equals(recordId)){
+            StudentTrainRecord studentTrainRecord = studentTrainRecordService.selectStudentTrainRecordById(recordId);
+            //获取诊断数据
+            if (studentTrainRecord !=null && studentTrainRecord.getImpRecordId() !=null && !"".equals(studentTrainRecord.getImpRecordId())) {
+                impRecord = impRecordService.selectImpRecordById(studentTrainRecord.getImpRecordId());
+            }
+            //获取问诊模块数据
+            if (studentTrainRecord!=null && studentTrainRecord.getHistoryRecordId() != null && !"".equals(studentTrainRecord.getHistoryRecordId())){
+                HistorySupportRecord record = new HistorySupportRecord();
+                record.setHistoryRecordId(studentTrainRecord.getHistoryRecordId());
+                historySupportRecords = historySupportRecordService.selectHistorySupportRecordListCore(record);
+            }
+            //获取体格检查模块的数据
+            if (studentTrainRecord!=null && studentTrainRecord.getTgRecordId() !=null && !"".equals(studentTrainRecord.getTgRecordId())) {
+                TgcheckSupportRecord tgcheckSupportRecord = new TgcheckSupportRecord();
+                tgcheckSupportRecord.setCheckRecordId(studentTrainRecord.getTgRecordId());
+                tgcheckSupportRecords = tgcheckSupportRecordService.selectTgcheckSupportRecordListCore(studentTrainRecord.getPatientId(), tgcheckSupportRecord);
+            }
+            //获取精神检查模块的数据
+            if (studentTrainRecord!=null && studentTrainRecord.getJsRecordId() !=null && !"".equals(studentTrainRecord.getJsRecordId())) {
+                JscheckSupportRecord jscheckSupportRecord = new JscheckSupportRecord();
+                jscheckSupportRecord.setCheckRecordId(studentTrainRecord.getJsRecordId());
+                jscheckSupportRecords = jscheckSupportRecordService.selectJscheckSupportRecordListCore(studentTrainRecord.getPatientId(), jscheckSupportRecord);
+            }
+            //获取辅助检查模块的数据
+            if (studentTrainRecord!=null && studentTrainRecord.getFzRecordId() !=null && !"".equals(studentTrainRecord.getFzRecordId())) {
+                FzcheckSupportRecord fzcheckSupportRecord = new FzcheckSupportRecord();
+                fzcheckSupportRecord.setCheckRecordId(studentTrainRecord.getFzRecordId());
+                fzcheckSupportRecords = fzcheckSupportRecordService.selectFzcheckSupportRecordListCore(studentTrainRecord.getPatientId(), fzcheckSupportRecord);
+
+            }
+        }
+        ajaxResult.put("impRecord", impRecord);
+        ajaxResult.put("historyRecords", historySupportRecords);
+        ajaxResult.put("tgRecords", tgcheckSupportRecords);
+        ajaxResult.put("jsRecords", jscheckSupportRecords);
+        ajaxResult.put("fzRecords", fzcheckSupportRecords);
+        return ajaxResult;
+    }
+
     /**
      * 诊断依据
      * @param

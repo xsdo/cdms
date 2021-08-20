@@ -27,6 +27,13 @@ public interface IHistorySupportRecordService
      */
     public List<HistorySupportRecord> selectHistorySupportRecordList(HistorySupportRecord historySupportRecord);
 
+    /**
+     * 查询病史采集问题支持记录列表（核心！）
+     *
+     * @param historySupportRecord 病史采集问题支持记录
+     * @return 病史采集问题支持记录集合
+     */
+    List<HistorySupportRecord> selectHistorySupportRecordListCore(HistorySupportRecord historySupportRecord);
 
     /**
      * 新增病史采集问题支持记录

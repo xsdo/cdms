@@ -32,6 +32,17 @@ public class CasePatientItem
     @Excel(name = "临床意义")
     private String significance;
 
+    /** 是否核心项目（1 核心项目 2非核心项目 0待定） */
+    private Long isCore;
+
+    public Long getIsCore() {
+        return isCore;
+    }
+
+    public void setIsCore(Long isCore) {
+        this.isCore = isCore;
+    }
+
     public void setPatientId(Long patientId)
     {
         this.patientId = patientId;
@@ -85,6 +96,7 @@ public class CasePatientItem
             .append("records", getRecords())
             .append("recordsImg", getRecordsImg())
             .append("significance", getSignificance())
+            .append("isCore", getIsCore())
             .toString();
     }
 }

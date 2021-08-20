@@ -41,6 +41,17 @@ public class CaseQuestion extends BaseEntity
     /** 所属类型 */
     private CaseQuestionType type;
 
+    /** 是否核心项目（1 核心项目 2非核心项目 0待定） */
+    private Long isCore;
+
+    public Long getIsCore() {
+        return isCore;
+    }
+
+    public void setIsCore(Long isCore) {
+        this.isCore = isCore;
+    }
+
     public CaseQuestionType getType() {
         return type;
     }
@@ -116,6 +127,7 @@ public class CaseQuestion extends BaseEntity
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
+            .append("isCore", getIsCore())
             .toString();
     }
 }

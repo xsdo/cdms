@@ -32,6 +32,17 @@ public class CasePatientItemServiceImpl implements ICasePatientItemService
     }
 
     /**
+     * 查询某案例下的某项目(核心)
+     * @param patientId
+     * @param itemId
+     * @return
+     */
+    @Override
+    public CasePatientItem selectCasePatientItemByCore(Long patientId,Long itemId)
+    {
+        return casePatientItemMapper.selectCasePatientItemByCore(patientId,itemId);
+    }
+    /**
      * 查询案例病人和检查项目关联列表
      * 
      * @param casePatientItem 案例病人和检查项目关联

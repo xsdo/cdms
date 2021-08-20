@@ -1,5 +1,6 @@
 package com.qx.student.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.qx.cases.domain.CasePatientItem;
@@ -126,6 +127,31 @@ public class FzcheckSupportRecordServiceImpl implements IFzcheckSupportRecordSer
         return fzcheckSupportRecords;
     }
 
+    /**
+     * 查询辅助检查项目支持记录集合（核心）
+     * @param patientId 案例患者id
+     * @param fzcheckSupportRecord 辅助检查项目支持记录
+     * @return
+     */
+    @Override
+    public List<FzcheckSupportRecord> selectFzcheckSupportRecordListCore(Long patientId, FzcheckSupportRecord fzcheckSupportRecord) {
+        List<FzcheckSupportRecord> fzcheckSupportRecordList = new ArrayList<>();
+        List<FzcheckSupportRecord> fzcheckSupportRecords = fzcheckSupportRecordMapper.selectFzcheckSupportRecordList(fzcheckSupportRecord);
+        for (FzcheckSupportRecord record:fzcheckSupportRecords){
+
+            CasePatientItem patientItem = casePatientItemService.selectCasePatientItemByCore(patientId, record.getItemId());
+            if (patientItem!=null){
+                if (patientItem.getIsCore()==1){
+                    //获取该案例下对应的检查项目数据
+                    record.getItem().setPatientItem(patientItem);
+                    if (record!=null){
+                        fzcheckSupportRecordList.add(record);
+                    }
+                }
+            }
+        }
+        return fzcheckSupportRecordList;
+    }
     /**
      * 批量更新
      * @param list

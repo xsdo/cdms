@@ -22,6 +22,14 @@ public interface CasePatientItemMapper
     public CasePatientItem selectCasePatientItemById(@Param(value = "patientId") Long patientId,@Param(value = "itemId") Long itemId);
 
     /**
+     * 查询某案例下的某项目(核心)
+     * @param patientId
+     * @param itemId
+     * @return
+     */
+    public CasePatientItem selectCasePatientItemByCore(@Param(value = "patientId") Long patientId,@Param(value = "itemId") Long itemId);
+
+    /**
      * 查询案例病人和检查项目关联列表
      * 
      * @param casePatientItem 案例病人和检查项目关联

@@ -1,5 +1,6 @@
 package com.qx.student.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.qx.cases.domain.CasePatientItem;
@@ -120,6 +121,31 @@ public class JscheckSupportRecordServiceImpl implements IJscheckSupportRecordSer
         return fzcheckSupportRecords;
     }
 
+    /**
+     * 查询精神检查项目支持记录集合（核心）
+     * @param patientId 案例患者id
+     * @param jscheckSupportRecord 精神检查项目支持记录
+     * @return
+     */
+    @Override
+    public List<JscheckSupportRecord> selectJscheckSupportRecordListCore(Long patientId, JscheckSupportRecord jscheckSupportRecord) {
+        List<JscheckSupportRecord> fzcheckSupportRecordList = new ArrayList<>();
+        List<JscheckSupportRecord> fzcheckSupportRecords = jscheckSupportRecordMapper.selectJscheckSupportRecordList(jscheckSupportRecord);
+        for (JscheckSupportRecord record:fzcheckSupportRecords){
+
+            CasePatientItem patientItem = casePatientItemService.selectCasePatientItemByCore(patientId, record.getItemId());
+            if (patientItem!=null){
+                if (patientItem.getIsCore()==1){
+                    //获取该案例下对应的检查项目数据
+                    record.getItem().setPatientItem(patientItem);
+                    if (record!=null){
+                        fzcheckSupportRecordList.add(record);
+                    }
+                }
+            }
+        }
+        return fzcheckSupportRecordList;
+    }
     /**
      * 批量更新
      * @param list

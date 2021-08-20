@@ -10,6 +10,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="records"    column="records"    />
         <result property="recordsImg"    column="records_img"    />
         <result property="significance"    column="significance"    />
+        <result property="isCore"    column="isCore"    />
     </resultMap>
 
 
@@ -23,12 +24,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="records != null  and records != ''"> and records = #{records}</if>
             <if test="recordsImg != null  and recordsImg != ''"> and records_img = #{recordsImg}</if>
             <if test="significance != null  and significance != ''"> and significance = #{significance}</if>
+            <if test="isCore != null  and isCore != ''"> and isCore = #{isCore}</if>
         </where>
     </select>
 
     <select id="selectCasePatientItemById" resultMap="CasePatientItemResult">
         <include refid="selectCasePatientItemVo"/>
         where patient_id = #{patientId} and item_id = #{itemId}
+    </select>
+
+    <select id="selectCasePatientItemByCore" resultMap="CasePatientItemResult">
+        <include refid="selectCasePatientItemVo"/>
+        where patient_id = #{patientId} and item_id = #{itemId} and isCore = 1
     </select>
 
     <select id="selectCasePatientItemByIds" resultMap="CasePatientItemResult">
@@ -47,6 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <if test="records != null  and records != ''">records,</if>
         <if test="recordsImg != null  and recordsImg != ''">records_img,</if>
         <if test="significance != null  and significance != ''">significance,</if>
+        <if test="isCore != null  and isCore != ''">isCore,</if>
      </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
         <if test="patientId != null ">#{patientId},</if>
@@ -54,6 +62,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <if test="records != null  and records != ''">#{records},</if>
         <if test="recordsImg != null  and recordsImg != ''">#{recordsImg},</if>
         <if test="significance != null  and significance != ''">#{significance},</if>
+        <if test="isCore != null  and isCore != ''">#{isCore},</if>
      </trim>
 </insert>
 
@@ -63,6 +72,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <if test="records != null  and records != ''">records = #{records},</if>
         <if test="significance != null  and significance != ''">significance = #{significance},</if>
         <if test="recordsImg != null  and recordsImg != ''">records_img = #{recordsImg},</if>
+        <if test="isCore != null  and isCore != ''">isCore = #{isCore},</if>
     </trim>
     where patient_id = #{patientId} and item_id = #{itemId}
 </update>
