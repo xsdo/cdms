@@ -1,10 +1,12 @@
 package com.qx.student.service;
 
+import com.qx.cases.domain.CaseCheckItem;
 import com.qx.student.domain.FzCheckRecord;
 import com.qx.student.domain.StudentTrainRecord;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 辅助检查记录Service接口
@@ -22,6 +24,14 @@ public interface IFzCheckRecordService
      * @return 辅助检查记录
      */
     public FzCheckRecord selectFzCheckRecordById(Long id,Long patientId);
+
+    List<CaseCheckItem> selectFzMissRecordById(Long id);
+
+    FzCheckRecord selectFzMissRecordById(Long id, Long patientId);
+
+//    Map<String,String> selectFzMissRecordById(Long id);
+
+    Double countFzScore(Long id);
 
     /**
      * 查询辅助检查记录列表

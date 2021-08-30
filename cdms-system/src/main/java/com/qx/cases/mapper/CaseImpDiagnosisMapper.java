@@ -17,6 +17,9 @@ public interface CaseImpDiagnosisMapper
     public List<CaseImpDiagnosis> selectCaseImpDiagnosisByIds(Long[] impId);
 
 
+    public List<CaseImpDiagnosis> selectCaseImpDiagnosisByPid(Long pId);
+
+
     public List<CaseImpDiagnosis> selectCaseImpDiagnosisList(CaseImpDiagnosis caseImpDiagnosis);
 
 

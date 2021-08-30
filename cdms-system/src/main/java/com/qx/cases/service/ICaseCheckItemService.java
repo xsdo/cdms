@@ -30,6 +30,8 @@ public interface ICaseCheckItemService
      */
     public List<CaseCheckItem> selectCaseCheckItemList(CaseCheckItem caseCheckItem);
 
+    List<CaseCheckItem> selectCaseCheckItemByIds(Long[] itemIds);
+
     /**
      * 新增检查项目
      * 

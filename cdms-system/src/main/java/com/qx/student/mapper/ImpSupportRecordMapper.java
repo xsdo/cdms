@@ -1,6 +1,8 @@
 package com.qx.student.mapper;
 
 import com.qx.student.domain.ImpSupportRecord;
+import com.qx.student.domain.TgcheckSupportRecord;
+
 import java.util.List;
 
 /**
@@ -35,6 +37,12 @@ public interface ImpSupportRecordMapper
      */
     public int insertImpSupportRecord(ImpSupportRecord impSupportRecord);
 
+    /**
+     * 批量插入
+     * @param list
+     * @return
+     */
+    int insertImpSupportRecordByList(List<ImpSupportRecord> list);
     /**
      * 修改诊断依据支持记录
      * 

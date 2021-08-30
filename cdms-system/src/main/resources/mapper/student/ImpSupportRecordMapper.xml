@@ -8,11 +8,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="id"    column="id"    />
         <result property="impRecordId"    column="imp_record_id"    />
         <result property="basisId"    column="basis_id"    />
+        <result property="pimpId"    column="pimp_id"    />
         <result property="support"    column="support"    />
     </resultMap>
 
     <sql id="selectImpSupportRecordVo">
-        select id, imp_record_id, basis_id, support from imp_support_record
+        select id, imp_record_id, basis_id, pimp_id , support from imp_support_record
     </sql>
 
     <select id="selectImpSupportRecordList" parameterType="ImpSupportRecord" resultMap="ImpSupportRecordResult">
@@ -20,6 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="impRecordId != null "> and imp_record_id = #{impRecordId}</if>
             <if test="basisId != null "> and basis_id = #{basisId}</if>
+            <if test="pimpId != null "> and pimp_id = #{pimpId}</if>
             <if test="support != null  and support != ''"> and support = #{support}</if>
         </where>
     </select>
@@ -34,13 +36,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="impRecordId != null ">imp_record_id,</if>
             <if test="basisId != null ">basis_id,</if>
+            <if test="pimpId != null ">pimp_id,</if>
             <if test="support != null  and support != ''">support,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="impRecordId != null ">#{impRecordId},</if>
             <if test="basisId != null ">#{basisId},</if>
+            <if test="pimpId != null ">#{pimpId},</if>
             <if test="support != null  and support != ''">#{support},</if>
          </trim>
+    </insert>
+
+    <insert id="insertImpSupportRecordByList" parameterType="list" useGeneratedKeys="true" keyProperty="id">
+        insert into imp_support_record(imp_record_id,basis_id,pimp_id)
+        VALUES
+        <foreach collection="list" item="record" separator=",">
+            (#{record.impRecordId},#{record.basisId},#{record.pimpId})
+        </foreach>
     </insert>
 
     <update id="updateImpSupportRecord" parameterType="ImpSupportRecord">
@@ -48,6 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="impRecordId != null ">imp_record_id = #{impRecordId},</if>
             <if test="basisId != null ">basis_id = #{basisId},</if>
+            <if test="pimpId != null ">pimp_id = #{pimpId},</if>
             <if test="support != null  and support != ''">support = #{support},</if>
         </trim>
         where id = #{id}

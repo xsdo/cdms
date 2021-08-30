@@ -26,9 +26,25 @@ public class ImpSupportRecord extends BaseEntity
     @Excel(name = "诊断依据ID")
     private Long basisId;
 
+    /** 诊断依据父ID */
+    @Excel(name = "诊断依据父ID")
+    private Long pimpId;
+
+
+
     /** 支持状态（0支持 1不支持） */
     @Excel(name = "支持状态", readConverterExp = "0=支持,1=不支持")
+
+
     private String support;
+
+    public Long getPimpId() {
+        return pimpId;
+    }
+
+    public void setPimpId(Long pimpId) {
+        this.pimpId = pimpId;
+    }
 
     public void setId(Long id) 
     {
@@ -73,6 +89,7 @@ public class ImpSupportRecord extends BaseEntity
             .append("id", getId())
             .append("impRecordId", getImpRecordId())
             .append("basisId", getBasisId())
+            .append("pimpId", getPimpId())
             .append("support", getSupport())
             .toString();
     }

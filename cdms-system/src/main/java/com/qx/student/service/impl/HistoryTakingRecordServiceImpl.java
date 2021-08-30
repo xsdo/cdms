@@ -1,14 +1,12 @@
 package com.qx.student.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.qx.cases.domain.CaseQuestion;
 import com.qx.cases.service.ICaseQuestionService;
 import com.qx.student.domain.HistorySupportRecord;
+import com.qx.student.domain.ImpRecord;
 import com.qx.student.domain.StudentTrainRecord;
 import com.qx.student.service.IHistorySupportRecordService;
 import com.qx.student.service.IStudentTrainRecordService;
@@ -69,6 +67,37 @@ public class HistoryTakingRecordServiceImpl implements IHistoryTakingRecordServi
         return historyTakingRecord;
     }
 
+    @Override
+    public List<CaseQuestion> selectHistoryMissQuestions(Long id){
+        List<CaseQuestion> list = new ArrayList<>();
+        HistoryTakingRecord historyTakingRecord = historyTakingRecordMapper.selectHistoryTakingRecordById(id);
+        String[] ids = historyTakingRecord.getQuestionIds().split(",");
+        List<Long> longList = Arrays.asList(ids).stream().map(Long::parseLong).collect(Collectors.toList());
+        List<Long> allList = new ArrayList<Long>();
+        //给allList添加所有questionId
+        for (int i =1;i<=45;i++){
+            allList.add(new Long(i));
+        }
+        allList.removeAll(longList); //选择未答题的id
+        /* Iterator<Long> it = allList.iterator();  //创建迭代器
+        List<Long> missList =new ArrayList<>();
+        while (it.hasNext()){ //循环遍历迭代器
+            missList.add(it.next());
+        }*/
+//        Long[] questionIds =  missList.toArray(new Long[]{});
+        Long[] questionIds =  allList.toArray(new Long[]{});
+        list=caseQuestionService.selectCaseQuestionByIds(questionIds);
+        return list;
+    }
+    @Override
+    public Double countHistoryScore(Long id){
+        Double countHistoryScore =new Double(0);
+        HistoryTakingRecord historyTakingRecord = historyTakingRecordMapper.selectHistoryTakingRecordById(id);
+        String[] ids = historyTakingRecord.getQuestionIds().split(",");
+        //答对1题得0.5分，总45题
+        countHistoryScore = ids.length*0.5;
+        return countHistoryScore;
+    }
     /**
      * 查询病史采集记录列表
      * 

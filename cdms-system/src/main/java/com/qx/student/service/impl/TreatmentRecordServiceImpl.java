@@ -50,6 +50,50 @@ public class TreatmentRecordServiceImpl implements ITreatmentRecordService
         return record;
     }
 
+    @Override
+    public Double countTreatScore(Long id){
+        Double countTreatScore =new Double(0);
+        TreatmentRecord record = treatmentRecordMapper.selectTreatmentRecordById(id);
+        String[] ids = record.getTreatmentIds().split(",");
+        List<Long> longList = Arrays.asList(ids).stream().map(Long::parseLong).collect(Collectors.toList());
+        Long[] itemIds =  longList.toArray(new Long[]{});
+        //选择正压通气得6分
+        if (longList.contains(new Long(49))){
+            countTreatScore+=6.0;
+        }
+        //选了合适的心理治疗方法均得分
+        if (longList.contains(new Long(45))||longList.contains(new Long(48))||longList.contains(new Long(85))){
+            countTreatScore+=4.0;
+        }
+        List<CaseTreatment> list = caseTreatmentService.selectTreatmentByIds(itemIds);
+        int countYY = 0;
+        int countJL = 0;
+        int countQT = 0;
+
+        for (CaseTreatment caseTreatment:list){
+            //抗抑郁药 1/3
+            if (caseTreatment.getPid()==4){
+                countYY+=1;
+            }
+            //抗焦虑药 1/3
+            if (caseTreatment.getPid()==16){
+                countJL+=1;
+            }
+            //其他药物 1/3
+            if (caseTreatment.getPid()==36){
+                countQT+=1;
+            }
+        }
+        //同时选了抗抑郁药、抗焦虑药、其他中的一种，均得分
+        if (countYY>0&&countJL>0&&countQT>0){
+            countTreatScore+=10;
+        }else {
+            if (countYY>0){countTreatScore+=3.3;}
+            if (countJL>0){countTreatScore+=3.3;}
+            if (countQT>0){countTreatScore+=3.3;}
+        }
+        return countTreatScore;
+    }
     /**
      * 查询治疗记录列表
      * 

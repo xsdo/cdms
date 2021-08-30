@@ -1,5 +1,6 @@
 package com.qx.student.service;
 
+import com.qx.cases.domain.CaseQuestion;
 import com.qx.student.domain.HistoryTakingRecord;
 import com.qx.student.domain.StudentTrainRecord;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,10 @@ public interface IHistoryTakingRecordService
      * @return 病史采集记录
      */
     public HistoryTakingRecord selectHistoryTakingRecordById(Long id);
+
+    List<CaseQuestion> selectHistoryMissQuestions(Long id);
+
+    Double countHistoryScore(Long id);
 
     /**
      * 查询病史采集记录列表

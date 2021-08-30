@@ -15,6 +15,8 @@ public interface ICaseImpDiagnosisService {
 
     List<CaseImpDiagnosis> selectCaseImpDiagnosisList(CaseImpDiagnosis caseImpDiagnosis);
 
+    void getImpChildId(List<Long> childIds, Long impId);
+
     int insertCaseImpDiagnosis(CaseImpDiagnosis caseImpDiagnosis);
 
     int updateCaseImpDiagnosis(CaseImpDiagnosis caseImpDiagnosis);

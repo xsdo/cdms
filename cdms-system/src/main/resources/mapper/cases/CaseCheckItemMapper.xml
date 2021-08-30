@@ -37,6 +37,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where item_id = #{itemId}
     </select>
 
+    <select id="selectCaseCheckItemByIds" parameterType="Long" resultMap="CaseCheckItemResult">
+        <include refid="selectCaseCheckItemVo"/>
+        where item_id in
+        <foreach item="itemId" collection="array" open="(" separator="," close=")">
+        #{itemId}
+    </foreach>
+    </select>
+
     <select id="hasChildByItemId" resultType="Integer">
         select count(1) from case_check_item where pid = #{id}
     </select>

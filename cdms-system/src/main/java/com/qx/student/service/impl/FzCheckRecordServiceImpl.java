@@ -1,13 +1,14 @@
 package com.qx.student.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import com.qx.cases.domain.CaseCheckItem;
 import com.qx.cases.domain.CasePatientItem;
 import com.qx.cases.mapper.CasePatientItemMapper;
+import com.qx.cases.service.ICaseCheckItemService;
 import com.qx.student.domain.FzcheckSupportRecord;
+import com.qx.student.domain.JsCheckRecord;
 import com.qx.student.domain.StudentTrainRecord;
 import com.qx.student.service.IFzcheckSupportRecordService;
 import com.qx.student.service.IStudentTrainRecordService;
@@ -35,6 +36,9 @@ public class FzCheckRecordServiceImpl implements IFzCheckRecordService
 
     @Autowired
     private IStudentTrainRecordService studentTrainRecordService;
+
+    @Autowired
+    private ICaseCheckItemService caseCheckItemService;
     /**
      * 查询辅助检查记录
      * 
@@ -53,6 +57,74 @@ public class FzCheckRecordServiceImpl implements IFzCheckRecordService
         return record;
     }
 
+    @Override
+    public List<CaseCheckItem> selectFzMissRecordById(Long id)
+    {
+        FzCheckRecord record = fzCheckRecordMapper.selectFzCheckRecordById(id);
+        String[] ids = record.getItemIds().split(",");
+        List<Long> longList = Arrays.asList(ids).stream().map(Long::parseLong).collect(Collectors.toList());
+        List<Long> allList = new ArrayList<Long>();
+        //给allList添加所有辅助检查itemId
+        allList.add(new Long(45));
+        allList.add(new Long(46));
+        allList.add(new Long(66));
+        allList.add(new Long(67));
+        allList.removeAll(longList);
+        /*Iterator<Long> it = allList.iterator();  //创建迭代器
+        List<Long> missList =new ArrayList<>();
+        while (it.hasNext()){ //循环遍历迭代器
+            missList.add(it.next());
+        }*/
+        Long[] itemIds =  allList.toArray(new Long[]{});
+        List<CaseCheckItem>caseCheckItemList = caseCheckItemService.selectCaseCheckItemByIds(itemIds);
+        return caseCheckItemList;
+    }
+    @Override
+    public FzCheckRecord selectFzMissRecordById(Long id,Long patientId)
+    {
+//        Map<String,String> map =new HashMap<>();
+        FzCheckRecord record = fzCheckRecordMapper.selectFzCheckRecordById(id);
+        String[] ids = record.getItemIds().split(",");
+        List<Long> longList = Arrays.asList(ids).stream().map(Long::parseLong).collect(Collectors.toList());
+
+        /*if (!longList.contains(new Long(45))){ map.put("睡眠多导检测（PSG）","未检查");}
+        if (!longList.contains(new Long(46))){ map.put("多次睡眠潜伏期实验（MSLT）","未检查");}
+        if (!longList.contains(new Long(66))){ map.put("脑诱发电位","未检查");}
+        if (!longList.contains(new Long(67))){ map.put("近红外脑功能成像","未检查");}
+
+        return map;*/
+        List<Long> allList = new ArrayList<Long>();
+        //给allList添加所有辅助检查itemId
+        allList.add(new Long(45));
+        allList.add(new Long(46));
+        allList.add(new Long(66));
+        allList.add(new Long(67));
+        boolean ret = allList.removeAll(longList);
+        Iterator<Long> it = allList.iterator();  //创建迭代器
+        List<Long> missList =new ArrayList<>();
+        while (it.hasNext()){ //循环遍历迭代器
+            missList.add(it.next());
+        }
+        Long[] itemIds =  missList.toArray(new Long[]{});
+//        Long[] itemIds =  longList.toArray(new Long[]{});
+        List<CasePatientItem> list = casePatientItemMapper.selectCasePatientItemByIds(patientId,itemIds);
+        record.setPatientItem(list);
+        return record;
+    }
+
+    @Override
+    public Double countFzScore(Long id){
+        Double countFzScore =new Double(0);
+        FzCheckRecord record = fzCheckRecordMapper.selectFzCheckRecordById(id);
+        String[] ids = record.getItemIds().split(",");
+        List<Long> longList = Arrays.asList(ids).stream().map(Long::parseLong).collect(Collectors.toList());
+//        Long[] itemIds =  longList.toArray(new Long[]{});
+        if (longList.contains(new Long(45))){ countFzScore += 2.0;}
+        if (longList.contains(new Long(46))){ countFzScore += 2.0;}
+        if (longList.contains(new Long(66))){ countFzScore += 2.0;}
+        if (longList.contains(new Long(67))){ countFzScore += 2.0;}
+        return countFzScore;
+    }
     /**
      * 查询辅助检查记录列表
      * 

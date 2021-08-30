@@ -26,6 +26,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="diagnosis"    column="diagnosis"    />
         <result property="avatar"    column="avatar"    />
 
+        <result property="religion"    column="religion"    />
+        <result property="education"    column="education"    />
+
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -34,7 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <sql id="selectCasePatientVo">
         select id, patient_name, sex, age, symptom, visit_date, marital_status, nation, native_place,
-        occupation, affiliation, home, telephone, payment, anamnesis,anamnesis_img, declarant, diagnosis, avatar, create_by, create_time, update_by, update_time from case_patient
+        occupation, affiliation, home, telephone, payment, anamnesis,anamnesis_img, declarant, diagnosis, avatar, religion, education, create_by, create_time, update_by, update_time from case_patient
     </sql>
 
     <select id="selectCasePatientList" parameterType="CasePatient" resultMap="CasePatientResult">
@@ -72,6 +75,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 and declarant like concat('%', #{declarant}, '%')</if>
             <if test="diagnosis != null  and diagnosis != ''">
                 and diagnosis like concat('%', #{diagnosis}, '%')</if>
+            <if test="religion != null  and religion != ''">
+                and religion like concat('%', #{religion}, '%')</if>
+            <if test="religion != null  and religion != ''">
+                and education like concat('%', #{education}, '%')</if>
         </where>
     </select>
     
@@ -105,6 +112,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="declarant != null  and declarant != ''">declarant,</if>
             <if test="diagnosis != null  and diagnosis != ''">diagnosis,</if>
             <if test="avatar != null  and avatar != ''">avatar,</if>
+            <if test="religion != null  and religion != ''">religion,</if>
+            <if test="education != null  and education != ''">education,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="patientName != null  and patientName != ''">#{patientName},</if>
@@ -129,6 +138,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="declarant != null  and declarant != ''">#{declarant},</if>
             <if test="diagnosis != null  and declarant != ''">#{diagnosis},</if>
             <if test="avatar != null  and avatar != ''">#{avatar},</if>
+            <if test="religion != null  and religion != ''">#{religion},</if>
+            <if test="education != null  and education != ''">#{education},</if>
          </trim>
     </insert>
 
@@ -157,6 +168,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="declarant != null  and declarant != ''">declarant = #{declarant},</if>
             <if test="diagnosis != null  and diagnosis != ''">diagnosis = #{diagnosis},</if>
             <if test="avatar != null  and avatar != ''">avatar = #{avatar},</if>
+            <if test="religion != null  and religion != ''">religion = #{religion},</if>
+            <if test="education != null  and education != ''">education = #{education},</if>
         </trim>
         where id = #{id}
     </update>

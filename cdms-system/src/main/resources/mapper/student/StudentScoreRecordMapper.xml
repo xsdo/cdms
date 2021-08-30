@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qx.student.mapper.StudentScoreRecordMapper">
+    
+    <resultMap type="StudentScoreRecord" id="StudentScoreRecordResult">
+        <result property="id"    column="id"    />
+        <result property="stuId"    column="stu_id"    />
+        <result property="patientId"    column="patient_id"    />
+        <result property="recordId"    column="record_id"    />
+        <result property="historyScore"    column="history_score"    />
+        <result property="tgScore"    column="tg_score"    />
+        <result property="jsScore"    column="js_score"    />
+        <result property="fzScore"    column="fz_score"    />
+        <result property="impScore"    column="imp_score"    />
+        <result property="treatScore"    column="treat_score"    />
+        <result property="medicalScore"    column="medical_score"    />
+        <result property="sumScore"    column="sum_score"    />
+        <result property="status"    column="status"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updataTime"    column="updata_time"    />
+    </resultMap>
+
+    <sql id="selectStudentScoreRecordVo">
+        select id, stu_id, patient_id, record_id, history_score, tg_score, js_score, fz_score, imp_score, treat_score, medical_score, sum_score, status, remarks, create_time, updata_time from student_score_record
+    </sql>
+
+    <select id="selectStudentScoreAvg"  resultType="Double">
+        select avg(sum_score)  from student_score_record
+    </select>
+
+    <select id="selectStudentScoreMax"  resultType="Double">
+        select  max(sum_score)  from student_score_record
+    </select>
+
+    <select id="hasScoreCount"   resultType="int">
+        select count(1) from student_score_record
+    </select>
+
+    <select id="hasScoreCountBySum"  parameterType="Double" resultType="int">
+        select count(1) from student_score_record
+        <where>
+            <if test="_parameter != null ">and sum_score <![CDATA[ < ]]> #{sumScore}  </if>
+        </where>
+    </select>
+
+    <select id="selectStudentScoreRecordList" parameterType="StudentScoreRecord" resultMap="StudentScoreRecordResult">
+        <include refid="selectStudentScoreRecordVo"/>
+        <where>  
+            <if test="stuId != null "> and stu_id = #{stuId}</if>
+            <if test="patientId != null "> and patient_id = #{patientId}</if>
+            <if test="recordId != null "> and record_id = #{recordId}</if>
+            <if test="historyScore != null "> and history_score = #{historyScore}</if>
+            <if test="tgScore != null "> and tg_score = #{tgScore}</if>
+            <if test="jsScore != null "> and js_score = #{jsScore}</if>
+            <if test="fzScore != null "> and fz_score = #{fzScore}</if>
+            <if test="impScore != null "> and imp_score = #{impScore}</if>
+            <if test="treatScore != null "> and treat_score = #{treatScore}</if>
+            <if test="medicalScore != null "> and medical_score = #{medicalScore}</if>
+            <if test="sumScore != null "> and sum_score = #{sumScore}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            <if test="updataTime != null "> and updata_time = #{updataTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectStudentScoreRecordById" parameterType="Long" resultMap="StudentScoreRecordResult">
+        <include refid="selectStudentScoreRecordVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectStudentScoreRecordByRecordId" parameterType="Long" resultMap="StudentScoreRecordResult">
+        <include refid="selectStudentScoreRecordVo"/>
+        where record_id = #{recordId}
+    </select>
+    <insert id="insertStudentScoreRecord" parameterType="StudentScoreRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into student_score_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="stuId != null ">stu_id,</if>
+            <if test="patientId != null ">patient_id,</if>
+            <if test="recordId != null ">record_id,</if>
+            <if test="historyScore != null ">history_score,</if>
+            <if test="tgScore != null ">tg_score,</if>
+            <if test="jsScore != null ">js_score,</if>
+            <if test="fzScore != null ">fz_score,</if>
+            <if test="impScore != null ">imp_score,</if>
+            <if test="treatScore != null ">treat_score,</if>
+            <if test="medicalScore != null ">medical_score,</if>
+            <if test="sumScore != null ">sum_score,</if>
+            <if test="status != null  and status != ''">status,</if>
+            <if test="remarks != null  and remarks != ''">remarks,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updataTime != null ">updata_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="stuId != null ">#{stuId},</if>
+            <if test="patientId != null ">#{patientId},</if>
+            <if test="recordId != null ">#{recordId},</if>
+            <if test="historyScore != null ">#{historyScore},</if>
+            <if test="tgScore != null ">#{tgScore},</if>
+            <if test="jsScore != null ">#{jsScore},</if>
+            <if test="fzScore != null ">#{fzScore},</if>
+            <if test="impScore != null ">#{impScore},</if>
+            <if test="treatScore != null ">#{treatScore},</if>
+            <if test="medicalScore != null ">#{medicalScore},</if>
+            <if test="sumScore != null ">#{sumScore},</if>
+            <if test="status != null  and status != ''">#{status},</if>
+            <if test="remarks != null  and remarks != ''">#{remarks},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updataTime != null ">#{updataTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateStudentScoreRecord" parameterType="StudentScoreRecord">
+        update student_score_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="stuId != null ">stu_id = #{stuId},</if>
+            <if test="patientId != null ">patient_id = #{patientId},</if>
+            <if test="recordId != null ">record_id = #{recordId},</if>
+            <if test="historyScore != null ">history_score = #{historyScore},</if>
+            <if test="tgScore != null ">tg_score = #{tgScore},</if>
+            <if test="jsScore != null ">js_score = #{jsScore},</if>
+            <if test="fzScore != null ">fz_score = #{fzScore},</if>
+            <if test="impScore != null ">imp_score = #{impScore},</if>
+            <if test="treatScore != null ">treat_score = #{treatScore},</if>
+            <if test="medicalScore != null ">medical_score = #{medicalScore},</if>
+            <if test="sumScore != null ">sum_score = #{sumScore},</if>
+            <if test="status != null  and status != ''">status = #{status},</if>
+            <if test="remarks != null  and remarks != ''">remarks = #{remarks},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updataTime != null ">updata_time = #{updataTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteStudentScoreRecordById" parameterType="Long">
+        delete from student_score_record where id = #{id}
+    </delete>
+
+    <delete id="deleteStudentScoreRecordByIds" parameterType="String">
+        delete from student_score_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

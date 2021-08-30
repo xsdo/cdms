@@ -23,6 +23,8 @@ public interface ITreatmentRecordService
      */
     public TreatmentRecord selectTreatmentRecordById(Long id);
 
+    Double countTreatScore(Long id);
+
     /**
      * 查询治疗记录列表
      * 

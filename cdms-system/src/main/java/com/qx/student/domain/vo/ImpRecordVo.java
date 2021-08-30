@@ -21,6 +21,16 @@ public class ImpRecordVo implements Serializable{
 
     private Long studentTrainId;
 
+    private String supports;
+
+    public String getSupports() {
+        return supports;
+    }
+
+    public void setSupports(String supports) {
+        this.supports = supports;
+    }
+
     public ImpRecord getImpRecord() {
         return impRecord;
     }

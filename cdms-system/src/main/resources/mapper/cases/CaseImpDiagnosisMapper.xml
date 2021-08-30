@@ -30,6 +30,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectCaseImpDiagnosisVo"/>
         where imp_id = #{impId}
     </select>
+
+    <select id="selectCaseImpDiagnosisByPid" parameterType="Long" resultMap="CaseImpDiagnosisResult">
+        <include refid="selectCaseImpDiagnosisVo"/>
+        where pid = #{pId}
+    </select>
+
     <select id="selectCaseImpDiagnosisByIds" parameterType="Long" resultMap="CaseImpDiagnosisResult">
         <include refid="selectCaseImpDiagnosisVo"/>
         where imp_id in

@@ -52,6 +52,22 @@ public class CaseImpDiagnosisServiceImpl implements ICaseImpDiagnosisService
         return caseImpDiagnosisMapper.selectCaseImpDiagnosisList(caseImpDiagnosis) ;
     }
 
+    @Override
+    public void getImpChildId(List<Long> childIds ,Long impId){
+        if (this.hasChildById(impId)){
+            List<CaseImpDiagnosis>caseImpDiagnoses=caseImpDiagnosisMapper.selectCaseImpDiagnosisByPid(impId);
+            for (CaseImpDiagnosis caseImpDiagnosis :caseImpDiagnoses){
+                if (this.hasChildById(caseImpDiagnosis.getImpId())){
+                    this.getImpChildId(childIds,caseImpDiagnosis.getImpId());
+                }else {
+                    childIds.add(caseImpDiagnosis.getImpId());
+                }
+            }
+        }else {
+            childIds.add(impId);
+        }
+
+    }
     /**
      * 新增治疗项目
      * 

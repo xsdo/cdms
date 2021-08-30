@@ -57,10 +57,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
         
-    <insert id="insertMedicalWriteRecord" parameterType="MedicalWriteRecord">
+    <insert id="insertMedicalWriteRecord" parameterType="MedicalWriteRecord" useGeneratedKeys="true" keyProperty="id" >
         insert into medical_write_record
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null ">id,</if>
+<!--            <if test="id != null ">id,</if>-->
             <if test="patientId != null ">patient_id,</if>
             <if test="department != null  and department != ''">department,</if>
             <if test="bedNo != null  and bedNo != ''">bed_no,</if>
@@ -80,7 +80,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="residentDoctor != null  and residentDoctor != ''">resident_doctor,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null ">#{id},</if>
+<!--            <if test="id != null ">#{id},</if>-->
             <if test="patientId != null ">#{patientId},</if>
             <if test="department != null  and department != ''">#{department},</if>
             <if test="bedNo != null  and bedNo != ''">#{bedNo},</if>

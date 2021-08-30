@@ -50,6 +50,25 @@ public class MedicalWriteRecordServiceImpl implements IMedicalWriteRecordService
         return medicalWriteRecordMapper.selectMedicalWriteRecordList(medicalWriteRecord);
     }
 
+    @Override
+    public Double countMedicalScore(Long id){
+        Double countMedicalScore =new Double(0);
+        MedicalWriteRecord medicalWriteRecord = medicalWriteRecordMapper.selectMedicalWriteRecordById(id);
+        //基本信息+主体（10部分) 初步诊断3分 其他每个信息1分
+        if (medicalWriteRecord!=null){
+            if (medicalWriteRecord.getChiefComplaint()!=null&&!medicalWriteRecord.getChiefComplaint().equals("")){ countMedicalScore+=1.0; }
+            if (medicalWriteRecord.getHpi()!=null&&!medicalWriteRecord.getHpi().equals("")){ countMedicalScore+=1.0; }
+            if (medicalWriteRecord.getPastHistory()!=null&&!medicalWriteRecord.getPastHistory().equals("")){ countMedicalScore+=1.0; }
+            if (medicalWriteRecord.getPersonalHistory()!=null&&!medicalWriteRecord.getPersonalHistory().equals("")){ countMedicalScore+=1.0; }
+            if (medicalWriteRecord.getMmch()!=null&&!medicalWriteRecord.getMmch().equals("")){ countMedicalScore+=1.0; }
+            if (medicalWriteRecord.getFamilyHistory()!=null&&!medicalWriteRecord.getFamilyHistory().equals("")){ countMedicalScore+=1.0; }
+            if (medicalWriteRecord.getTgCheck()!=null&&!medicalWriteRecord.getTgCheck().equals("")){ countMedicalScore+=1.0; }
+            if (medicalWriteRecord.getJsCheck()!=null&&!medicalWriteRecord.getJsCheck().equals("")){ countMedicalScore+=1.0; }
+            if (medicalWriteRecord.getFzCheck()!=null&&!medicalWriteRecord.getFzCheck().equals("")){ countMedicalScore+=1.0; }
+            if (medicalWriteRecord.getPrimaryDiagnosis()!=null&&!medicalWriteRecord.getPrimaryDiagnosis().equals("")){ countMedicalScore+=3.0; }
+        }
+        return countMedicalScore;
+    }
     /**
      * 新增病历书写
      * 
@@ -65,6 +84,20 @@ public class MedicalWriteRecordServiceImpl implements IMedicalWriteRecordService
         StudentTrainRecord trainRecord = new StudentTrainRecord();
         trainRecord.setId(recordVo.getStudentTrainId());
         trainRecord.setMedicalRecordId(recordVo.getMedicalWriteRecord().getId());
+        trainRecord.setEndTime(new Date());
+        trainRecord.setStatus("1");
+        return studentTrainRecordService.updateStudentTrainRecord(trainRecord);
+    }
+
+    @Override
+    public int insertMedicalWriteRecord(MedicalWriteRecord medicalWriteRecord, Long studentTrainId)
+    {
+        //添加病历书写记录
+        medicalWriteRecordMapper.insertMedicalWriteRecord(medicalWriteRecord);
+        //更新学生训练记录表中的数据
+        StudentTrainRecord trainRecord = new StudentTrainRecord();
+        trainRecord.setId(studentTrainId);
+        trainRecord.setMedicalRecordId(medicalWriteRecord.getId());
         trainRecord.setEndTime(new Date());
         trainRecord.setStatus("1");
         return studentTrainRecordService.updateStudentTrainRecord(trainRecord);

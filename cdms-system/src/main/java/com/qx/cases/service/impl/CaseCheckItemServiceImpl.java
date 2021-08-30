@@ -50,6 +50,10 @@ public class CaseCheckItemServiceImpl implements ICaseCheckItemService
         return caseCheckItemMapper.selectCaseCheckItemList(caseCheckItem);
     }
 
+    @Override
+    public List<CaseCheckItem> selectCaseCheckItemByIds(Long[]itemIds){
+        return caseCheckItemMapper.selectCaseCheckItemByIds(itemIds);
+    }
     /**
      * 新增检查项目
      * 

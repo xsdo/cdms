@@ -27,6 +27,8 @@ public interface CaseCheckItemMapper
      */
     public List<CaseCheckItem> selectCaseCheckItemList(CaseCheckItem caseCheckItem);
 
+
+    public List<CaseCheckItem> selectCaseCheckItemByIds (Long[] itenIds);
     /**
      * 新增检查项目
      * 

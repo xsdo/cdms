@@ -83,6 +83,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                // .antMatchers("/client/**").anonymous()
                 .antMatchers("/client/**").permitAll()
                 .antMatchers("/learning/**").permitAll()
+                .antMatchers("/student/**").permitAll()
 //                .antMatchers("/client/student/login").anonymous()
 //                .antMatchers("/client/student/logout").anonymous()
                 .anyRequest().authenticated()

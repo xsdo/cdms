@@ -2,11 +2,15 @@ package com.qx.student.service.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.qx.cases.domain.CaseCheckItem;
 import com.qx.cases.domain.CasePatientItem;
 import com.qx.cases.mapper.CasePatientItemMapper;
+import com.qx.cases.service.ICaseCheckItemService;
+import com.qx.student.domain.FzCheckRecord;
 import com.qx.student.domain.StudentTrainRecord;
 import com.qx.student.domain.TgcheckSupportRecord;
 import com.qx.student.service.IStudentTrainRecordService;
@@ -38,6 +42,9 @@ public class TgCheckRecordServiceImpl implements ITgCheckRecordService
     @Autowired
     private IStudentTrainRecordService studentTrainRecordService;
 
+    @Autowired
+    private ICaseCheckItemService caseCheckItemService;
+
     /**
      * 查询体格检查记录
      * 
@@ -57,6 +64,69 @@ public class TgCheckRecordServiceImpl implements ITgCheckRecordService
         return record;
     }
 
+    @Override
+    public List<CaseCheckItem> selectTgMissRecordById(Long id)
+    {
+        TgCheckRecord record = tgCheckRecordMapper.selectTgCheckRecordById(id);
+        String[] ids = record.getItemIds().split(",");
+        List<Long> longList = Arrays.asList(ids).stream().map(Long::parseLong).collect(Collectors.toList());
+        Long[] itemIds =  longList.toArray(new Long[]{});
+        List<CaseCheckItem>caseCheckItems=caseCheckItemService.selectCaseCheckItemByIds(itemIds);
+        int count=0;
+        for (CaseCheckItem caseCheckItem:caseCheckItems){
+            if (caseCheckItem.getPid()==1){count += 1;}
+        }
+        List<Long> allList = new ArrayList<Long>();
+        //给allList添加所有辅助检查itemId
+        if (count==0){
+            allList.add(new Long(1));
+        }
+        for (int i =2;i<8;i++){
+            allList.add(new Long(i));
+        }
+        allList.removeAll(longList);
+        /*allList.add(new Long(2));
+        allList.add(new Long(3));
+        allList.add(new Long(4));
+        allList.add(new Long(5));
+        allList.add(new Long(6));
+        allList.add(new Long(7));
+        allList.removeAll(longList);*/
+        /*Iterator<Long> it = allList.iterator();  //创建迭代器
+        List<Long> missList =new ArrayList<>();
+        while (it.hasNext()){ //循环遍历迭代器
+            missList.add(it.next());
+        }*/
+        Long[] itemIdList =  allList.toArray(new Long[]{});
+        List<CaseCheckItem>caseCheckItemList = caseCheckItemService.selectCaseCheckItemByIds(itemIdList);
+        return caseCheckItemList;
+    }
+
+    @Override
+    public Double countTgScore(Long id){
+        Double countTgScore =new Double(0);
+        TgCheckRecord record = tgCheckRecordMapper.selectTgCheckRecordById(id);
+        String[] ids = record.getItemIds().split(",");
+        List<Long> longList = Arrays.asList(ids).stream().map(Long::parseLong).collect(Collectors.toList());
+        Long[] itemIds =  longList.toArray(new Long[]{});
+        List<CaseCheckItem>caseCheckItems=caseCheckItemService.selectCaseCheckItemByIds(itemIds);
+        int count=0;
+
+        //pid为1 ==生命体征
+        for (CaseCheckItem caseCheckItem:caseCheckItems){
+            if (caseCheckItem.getPid()==1){
+                count += 1;
+            }
+            if (caseCheckItem.getPid()==0&&caseCheckItem.getItemId()!=1){
+                countTgScore += 1.0;
+            }
+
+        }
+        if (count>0){
+            countTgScore += 1.0;
+        }
+        return countTgScore;
+    }
     /**
      * 查询体格检查记录列表
      * 

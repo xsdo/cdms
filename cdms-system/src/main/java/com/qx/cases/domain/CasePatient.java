@@ -91,6 +91,29 @@ public class CasePatient extends BaseEntity
     @Excel(name = "患者图片")
     private String avatar;
 
+    /** 宗教 */
+    @Excel(name = "宗教")
+    private String religion;
+
+    /** 学历 */
+    @Excel(name = "学历")
+    private String education;
+
+    public String getReligion() {
+        return religion;
+    }
+
+    public void setReligion(String religion) {
+        this.religion = religion;
+    }
+
+    public String getEducation() {
+        return education;
+    }
+
+    public void setEducation(String education) {
+        this.education = education;
+    }
 
     public String getAvatar() {
         return avatar;
@@ -281,6 +304,8 @@ public class CasePatient extends BaseEntity
             .append("anamnesisImg", getAnamnesisImg())
             .append("diagnosis", getDiagnosis())
             .append("avatar", getAvatar())
+            .append("religion", getReligion())
+            .append("education", getEducation())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())

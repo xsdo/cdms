@@ -1,5 +1,6 @@
 package com.qx.student.service;
 
+import com.qx.cases.domain.CaseCheckItem;
 import com.qx.student.domain.JsCheckRecord;
 import com.qx.student.domain.StudentTrainRecord;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,12 @@ public interface IJsCheckRecordService
      * @return 精神状况检查记录
      */
     public JsCheckRecord selectJsCheckRecordById(Long id,Long patientId);
+
+    JsCheckRecord selectJsMissRecordById(Long id, Long patientId);
+
+    List<CaseCheckItem> selectJsMissRecordById(Long id);
+
+    Double countJsScore(Long id);
 
     /**
      * 查询精神状况检查记录列表

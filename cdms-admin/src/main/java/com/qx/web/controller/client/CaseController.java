@@ -97,6 +97,12 @@ public class CaseController extends BaseController {
     @Autowired
     private ICaseImpDiagnosisService caseImpDiagnosisService;
 
+    @Autowired
+    private IImpSupportRecordService impSupportRecordService;
+
+    @Autowired
+    private IMedicalWriteRecordService medicalWriteRecordService;
+
 
     /**
      * 查询所有案例患者
@@ -341,11 +347,15 @@ public class CaseController extends BaseController {
         List<JscheckSupportRecord> jscheckSupportRecords = null;
         List<FzcheckSupportRecord> fzcheckSupportRecords = null;
         ImpRecord impRecord = null;
+        List<ImpSupportRecord> impSupportRecords = null;
         if (recordId!=null && !"".equals(recordId)){
             StudentTrainRecord studentTrainRecord = studentTrainRecordService.selectStudentTrainRecordById(recordId);
             //获取诊断数据
             if (studentTrainRecord !=null && studentTrainRecord.getImpRecordId() !=null && !"".equals(studentTrainRecord.getImpRecordId())) {
                 impRecord = impRecordService.selectImpRecordById(studentTrainRecord.getImpRecordId());
+                ImpSupportRecord impSupportRecord= new ImpSupportRecord();
+                impSupportRecord.setImpRecordId(studentTrainRecord.getImpRecordId());
+                impSupportRecords = impSupportRecordService.selectImpSupportRecordList(impSupportRecord);
             }
             //获取问诊模块数据
             if (studentTrainRecord!=null && studentTrainRecord.getHistoryRecordId() != null && !"".equals(studentTrainRecord.getHistoryRecordId())){
@@ -374,6 +384,7 @@ public class CaseController extends BaseController {
             }
         }
         ajaxResult.put("impRecord", impRecord);
+        ajaxResult.put("impSupportRecord", impSupportRecords);
         ajaxResult.put("historyRecords", historySupportRecords);
         ajaxResult.put("tgRecords", tgcheckSupportRecords);
         ajaxResult.put("jsRecords", jscheckSupportRecords);
@@ -411,12 +422,18 @@ public class CaseController extends BaseController {
         List<JscheckSupportRecord> jscheckSupportRecords = null;
         List<FzcheckSupportRecord> fzcheckSupportRecords = null;
         ImpRecord impRecord = null;
+        List<ImpSupportRecord> impSupportRecords = null;
         if (recordId!=null && !"".equals(recordId)){
             StudentTrainRecord studentTrainRecord = studentTrainRecordService.selectStudentTrainRecordById(recordId);
-            //获取诊断数据
+            //获取诊断数据+诊断依据数据
             if (studentTrainRecord !=null && studentTrainRecord.getImpRecordId() !=null && !"".equals(studentTrainRecord.getImpRecordId())) {
                 impRecord = impRecordService.selectImpRecordById(studentTrainRecord.getImpRecordId());
+                ImpSupportRecord impSupportRecord= new ImpSupportRecord();
+                impSupportRecord.setImpRecordId(studentTrainRecord.getImpRecordId());
+                impSupportRecords = impSupportRecordService.selectImpSupportRecordList(impSupportRecord);
             }
+
+
             //获取问诊模块数据
             if (studentTrainRecord!=null && studentTrainRecord.getHistoryRecordId() != null && !"".equals(studentTrainRecord.getHistoryRecordId())){
                 HistorySupportRecord record = new HistorySupportRecord();
@@ -444,6 +461,7 @@ public class CaseController extends BaseController {
             }
         }
         ajaxResult.put("impRecord", impRecord);
+        ajaxResult.put("impSupportRecord", impSupportRecords);
         ajaxResult.put("historyRecords", historySupportRecords);
         ajaxResult.put("tgRecords", tgcheckSupportRecords);
         ajaxResult.put("jsRecords", jscheckSupportRecords);
@@ -558,6 +576,9 @@ public class CaseController extends BaseController {
         String maritalStatus = sysDictDataService.selectDictLabel("sys_user_maritalStatus", patient.getMaritalStatus());
         patient.setMaritalStatus(maritalStatus);
 
+        //获取病例书写记录
+        MedicalWriteRecord medicalWriteRecord =medicalWriteRecordService.selectMedicalWriteRecordById(studentTrainRecord.getMedicalRecordId());
+        ajaxResult.put("medicalWriteRecord",medicalWriteRecord);
         ajaxResult.put("patient",patient);
         return ajaxResult;
     }

@@ -1,5 +1,6 @@
 package com.qx.student.service;
 
+import com.qx.cases.domain.CaseCheckItem;
 import com.qx.student.domain.StudentTrainRecord;
 import com.qx.student.domain.TgCheckRecord;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,10 @@ public interface ITgCheckRecordService
      * @return 体格检查记录
      */
     public TgCheckRecord selectTgCheckRecordById(Long id,Long patientId);
+
+    List<CaseCheckItem> selectTgMissRecordById(Long id);
+
+    Double countTgScore(Long id);
 
     /**
      * 查询体格检查记录列表

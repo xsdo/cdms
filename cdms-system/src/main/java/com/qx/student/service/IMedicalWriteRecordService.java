@@ -29,6 +29,8 @@ public interface IMedicalWriteRecordService
      */
     public List<MedicalWriteRecord> selectMedicalWriteRecordList(MedicalWriteRecord medicalWriteRecord);
 
+    Double countMedicalScore(Long id);
+
     /**
      * 新增病历书写
      * 
@@ -36,6 +38,8 @@ public interface IMedicalWriteRecordService
      * @return 结果
      */
     public int insertMedicalWriteRecord(MedicalWriteRecordVo medicalWriteRecord);
+
+    int insertMedicalWriteRecord(MedicalWriteRecord medicalWriteRecord, Long studentTrainId);
 
     /**
      * 修改病历书写

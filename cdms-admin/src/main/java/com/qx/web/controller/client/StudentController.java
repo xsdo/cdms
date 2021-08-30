@@ -22,10 +22,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.lang.ref.PhantomReference;
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -188,13 +185,21 @@ public class StudentController extends BaseController {
         AjaxResult result = AjaxResult.success();
         StudentTrainRecord trainRecord = studentTrainRecordService.selectStudentTrainRecordById(recordVo.getStudentTrainId());
         if (trainRecord.getMedicalRecordId()==null || "".equals(trainRecord.getMedicalRecordId())){
+            MedicalWriteRecord medicalWriteRecord =recordVo.getMedicalWriteRecord();
             //添加病历书写记录
             recordVo.getMedicalWriteRecord().setPatientId(trainRecord.getPatientId());
             medicalWriteRecordService.insertMedicalWriteRecord(recordVo);
+        }else {
+            //更新病例书写记录
+            MedicalWriteRecord medicalWriteRecord =recordVo.getMedicalWriteRecord();
+            medicalWriteRecord.setId(trainRecord.getMedicalRecordId());
+            medicalWriteRecordService.updateMedicalWriteRecord(medicalWriteRecord);
         }
         result.put("trainRecord",trainRecord);
         return result;
     }
+
+
 
     /**
      * 存储治疗记录
@@ -260,17 +265,44 @@ public class StudentController extends BaseController {
 
         if (trainRecord.getImpRecordId()==null || "".equals(trainRecord.getImpRecordId())){
             //新增诊断记录
-            impRecordService.insertImpRecord(impRecordVo);
+            impRecordService.insertImpRecordN(impRecordVo);
         }else{
             //更新诊断记录
             impRecordVo.getImpRecord().setId(trainRecord.getImpRecordId());
-            impRecordService.updateImpRecord(impRecordVo);
+            impRecordService.updateImpRecordN(impRecordVo);
 
         }
         result.put("trainRecord",trainRecord);
         return result;
     }
 
+    /*@ApiOperation("存储诊断记录")
+        @ApiImplicitParams({
+                @ApiImplicitParam(name = "impRecordVo", value = "诊断扩展类,studentTrainId是学生诊断记录,impRecord的impIds和type都是用,拼接字符串，type：0主要1次要2鉴别，其中四个集合的每一个对象都需要传递参数id和support[0支持1不支持]",
+                        required = true, dataType = "com.qx.student.domain.vo.ImpRecordVo",
+                        example = "{'impRecordVo':{'studentTrainId':1,'impRecord':{'impIds':'2,3','type':'0,1'},'historySupportRecordList':[{'id':1,'support':'0'},{'id':2,'support':'0'}]}}"
+                )
+        })*/
+    @PostMapping("/addImpTest")
+    public AjaxResult addImpTest(@RequestBody ImpRecordVo impRecordVo){
+        if (impRecordVo==null){ return AjaxResult.error("提交信息为空"); }
+
+        AjaxResult result = AjaxResult.success();
+        //获取学生训练记录
+        StudentTrainRecord trainRecord = studentTrainRecordService.selectStudentTrainRecordById(impRecordVo.getStudentTrainId());
+
+        if (trainRecord.getImpRecordId()==null || "".equals(trainRecord.getImpRecordId())){
+            //新增诊断记录
+            impRecordService.insertImpRecordN(impRecordVo);
+        }else{
+            //更新诊断记录
+            impRecordVo.getImpRecord().setId(trainRecord.getImpRecordId());
+            impRecordService.updateImpRecordN(impRecordVo);
+
+        }
+        result.put("trainRecord",trainRecord);
+        return result;
+    }
 
     /**
      * 存储辅助检查记录

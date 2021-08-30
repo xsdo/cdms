@@ -1,5 +1,6 @@
 package com.qx.student.service;
 
+import com.qx.student.domain.ImpRecord;
 import com.qx.student.domain.ImpSupportRecord;
 import java.util.List;
 
@@ -34,6 +35,13 @@ public interface IImpSupportRecordService
      * @return 结果
      */
     public int insertImpSupportRecord(ImpSupportRecord impSupportRecord);
+
+
+    int insertImpSupportByImpid(List<Long> basisIds, Long recordId, Long pimpId);
+
+    void insertImpSupport(ImpRecord impRecord, String supports);
+
+    void updataImpSupport(ImpRecord impRecord, String supports);
 
     /**
      * 修改诊断依据支持记录
