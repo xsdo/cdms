@@ -79,12 +79,6 @@ public class HistoryTakingRecordServiceImpl implements IHistoryTakingRecordServi
             allList.add(new Long(i));
         }
         allList.removeAll(longList); //选择未答题的id
-        /* Iterator<Long> it = allList.iterator();  //创建迭代器
-        List<Long> missList =new ArrayList<>();
-        while (it.hasNext()){ //循环遍历迭代器
-            missList.add(it.next());
-        }*/
-//        Long[] questionIds =  missList.toArray(new Long[]{});
         Long[] questionIds =  allList.toArray(new Long[]{});
         list=caseQuestionService.selectCaseQuestionByIds(questionIds);
         return list;

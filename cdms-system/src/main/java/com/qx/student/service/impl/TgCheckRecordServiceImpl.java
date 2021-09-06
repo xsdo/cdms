@@ -85,19 +85,8 @@ public class TgCheckRecordServiceImpl implements ITgCheckRecordService
             allList.add(new Long(i));
         }
         allList.removeAll(longList);
-        /*allList.add(new Long(2));
-        allList.add(new Long(3));
-        allList.add(new Long(4));
-        allList.add(new Long(5));
-        allList.add(new Long(6));
-        allList.add(new Long(7));
-        allList.removeAll(longList);*/
-        /*Iterator<Long> it = allList.iterator();  //创建迭代器
-        List<Long> missList =new ArrayList<>();
-        while (it.hasNext()){ //循环遍历迭代器
-            missList.add(it.next());
-        }*/
         Long[] itemIdList =  allList.toArray(new Long[]{});
+
         List<CaseCheckItem>caseCheckItemList = caseCheckItemService.selectCaseCheckItemByIds(itemIdList);
         return caseCheckItemList;
     }
@@ -117,7 +106,7 @@ public class TgCheckRecordServiceImpl implements ITgCheckRecordService
             if (caseCheckItem.getPid()==1){
                 count += 1;
             }
-            if (caseCheckItem.getPid()==0&&caseCheckItem.getItemId()!=1){
+            if (caseCheckItem.getPid()==0&&caseCheckItem.getItemId()!=1&&caseCheckItem.getItemId()!=64&&caseCheckItem.getItemId()!=65){
                 countTgScore += 1.0;
             }
 

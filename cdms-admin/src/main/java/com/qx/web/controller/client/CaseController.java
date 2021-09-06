@@ -556,10 +556,13 @@ public class CaseController extends BaseController {
      */
     @ApiOperation("病历书写")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "patientId", value = "患者id", required = true, dataType = "Long"),
             @ApiImplicitParam(name = "id", value = "学生训练记录id", required = true, dataType = "Long")
+
+
     })
-    @GetMapping("/medicalWrite/{id}")
-    public AjaxResult getMedical(@PathVariable Long id){
+    @GetMapping("/medicalWrite")
+        public AjaxResult getMedical(Long patientId, Long id){
         LoginStudent loginStudent = tokenUtil.getLoginStudent(ServletUtils.getRequest());
         if (loginStudent==null){
             String msg = StringUtils.format("请求访问：{}，认证失败，无法访问系统资源", ServletUtils.getRequest().getRequestURI());
@@ -569,18 +572,22 @@ public class CaseController extends BaseController {
         AjaxResult ajaxResult = AjaxResult.success();
 
         //获取案例患者
-        StudentTrainRecord studentTrainRecord = studentTrainRecordService.selectStudentTrainRecordById(id);
-        CasePatient patient = casePatientService.selectCasePatientById(studentTrainRecord.getPatientId());
-        String sex = sysDictDataService.selectDictLabel("sys_user_sex", patient.getSex());
-        patient.setSex(sex);
-        String maritalStatus = sysDictDataService.selectDictLabel("sys_user_maritalStatus", patient.getMaritalStatus());
-        patient.setMaritalStatus(maritalStatus);
+        CasePatient patient = casePatientService.selectCasePatientById(patientId);
+        if (patient!=null){
+            String sex = sysDictDataService.selectDictLabel("sys_user_sex", patient.getSex());
+            patient.setSex(sex);
+            String maritalStatus = sysDictDataService.selectDictLabel("sys_user_maritalStatus", patient.getMaritalStatus());
+            patient.setMaritalStatus(maritalStatus);
+            ajaxResult.put("patient",patient);
+        }
 
         //获取病例书写记录
-        MedicalWriteRecord medicalWriteRecord =medicalWriteRecordService.selectMedicalWriteRecordById(studentTrainRecord.getMedicalRecordId());
-        ajaxResult.put("medicalWriteRecord",medicalWriteRecord);
-        ajaxResult.put("patient",patient);
-        return ajaxResult;
+        StudentTrainRecord studentTrainRecord = studentTrainRecordService.selectStudentTrainRecordById(id);
+        if (studentTrainRecord!=null){
+            MedicalWriteRecord medicalWriteRecord =medicalWriteRecordService.selectMedicalWriteRecordById(studentTrainRecord.getMedicalRecordId());
+            ajaxResult.put("medicalWriteRecord",medicalWriteRecord);
+        }
+            return ajaxResult;
     }
 
     /**

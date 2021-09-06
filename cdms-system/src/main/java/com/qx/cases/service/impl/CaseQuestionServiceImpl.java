@@ -118,7 +118,11 @@ public class CaseQuestionServiceImpl implements ICaseQuestionService
      */
     @Override
     public List<CaseQuestion> selectCaseQuestionByIds(Long[] ids) {
-        return caseQuestionMapper.selectCaseQuestionByIds(ids);
+        if (ids!=null&&ids.length>0){
+            return caseQuestionMapper.selectCaseQuestionByIds(ids);
+        }else {
+            return null;
+        }
     }
 
     private void recursionFn(CaseQuestionType type) {

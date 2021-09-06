@@ -185,7 +185,6 @@ public class StudentController extends BaseController {
         AjaxResult result = AjaxResult.success();
         StudentTrainRecord trainRecord = studentTrainRecordService.selectStudentTrainRecordById(recordVo.getStudentTrainId());
         if (trainRecord.getMedicalRecordId()==null || "".equals(trainRecord.getMedicalRecordId())){
-            MedicalWriteRecord medicalWriteRecord =recordVo.getMedicalWriteRecord();
             //添加病历书写记录
             recordVo.getMedicalWriteRecord().setPatientId(trainRecord.getPatientId());
             medicalWriteRecordService.insertMedicalWriteRecord(recordVo);
@@ -276,13 +275,6 @@ public class StudentController extends BaseController {
         return result;
     }
 
-    /*@ApiOperation("存储诊断记录")
-        @ApiImplicitParams({
-                @ApiImplicitParam(name = "impRecordVo", value = "诊断扩展类,studentTrainId是学生诊断记录,impRecord的impIds和type都是用,拼接字符串，type：0主要1次要2鉴别，其中四个集合的每一个对象都需要传递参数id和support[0支持1不支持]",
-                        required = true, dataType = "com.qx.student.domain.vo.ImpRecordVo",
-                        example = "{'impRecordVo':{'studentTrainId':1,'impRecord':{'impIds':'2,3','type':'0,1'},'historySupportRecordList':[{'id':1,'support':'0'},{'id':2,'support':'0'}]}}"
-                )
-        })*/
     @PostMapping("/addImpTest")
     public AjaxResult addImpTest(@RequestBody ImpRecordVo impRecordVo){
         if (impRecordVo==null){ return AjaxResult.error("提交信息为空"); }

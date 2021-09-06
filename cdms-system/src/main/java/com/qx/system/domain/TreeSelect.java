@@ -27,6 +27,8 @@ public class TreeSelect implements Serializable
     //详细信息
     private String result;
 
+    private String resultB;
+
     /** 层级 */
     private String level;
 
@@ -95,6 +97,7 @@ public class TreeSelect implements Serializable
         this.id = learning.getLearningId();
         this.label = learning.getLearningName();
         this.result =learning.getResult();
+        this.resultB =learning.getResultB();
         this.children = learning.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
     }
 
@@ -143,5 +146,13 @@ public class TreeSelect implements Serializable
 
     public void setResult(String result) {
         this.result = result;
+    }
+
+    public String getResultB() {
+        return resultB;
+    }
+
+    public void setResultB(String resultB) {
+        this.resultB = resultB;
     }
 }

@@ -99,7 +99,6 @@ public class ImpSupportRecordServiceImpl implements IImpSupportRecordService
         impSupportRecord.setImpRecordId(impRecord.getId());
         impSupportRecord.setPimpId(impId);
         List<ImpSupportRecord>impSupportRecords =this.selectImpSupportRecordList(impSupportRecord);
-
             for (ImpSupportRecord impSupportRecord1:impSupportRecords){
                 if (list.contains(impSupportRecord1.getBasisId())){
                     impSupportRecord1.setSupport("1");
@@ -109,8 +108,6 @@ public class ImpSupportRecordServiceImpl implements IImpSupportRecordService
                     this.updateImpSupportRecord(impSupportRecord1);
                 }
             }
-
-
     }
 
     @Override
@@ -161,12 +158,7 @@ public class ImpSupportRecordServiceImpl implements IImpSupportRecordService
                     this.updateImpSupportRecord(impSupportRecord1);
                 }
             }
-
         }
-
-
-
-
     }
     /**
      * 修改诊断依据支持记录

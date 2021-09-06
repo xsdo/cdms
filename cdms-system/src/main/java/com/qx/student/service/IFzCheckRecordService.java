@@ -27,10 +27,6 @@ public interface IFzCheckRecordService
 
     List<CaseCheckItem> selectFzMissRecordById(Long id);
 
-    FzCheckRecord selectFzMissRecordById(Long id, Long patientId);
-
-//    Map<String,String> selectFzMissRecordById(Long id);
-
     Double countFzScore(Long id);
 
     /**

@@ -1,13 +1,11 @@
 package com.qx.student.service;
 
 import com.qx.student.domain.ImpRecord;
-import com.qx.student.domain.StudentTrainRecord;
 import com.qx.student.domain.vo.ImpChooseVo;
 import com.qx.student.domain.vo.ImpRecordVo;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 诊断记录Service接口
@@ -26,11 +24,9 @@ public interface IImpRecordService
      */
     public ImpRecord selectImpRecordById(Long id);
 
-    List<ImpChooseVo> getImpChooseVo(Long id);
+    public List<ImpChooseVo> getImpChooseVo(Long id);
 
-    Map<String,String> getImpChoose(Long id);
-
-    Double countImpScore(Long id);
+    public Double countImpScore(Long id);
 
     /**
      * 查询诊断记录列表
@@ -41,7 +37,7 @@ public interface IImpRecordService
     public List<ImpRecord> selectImpRecordList(ImpRecord impRecord);
 
 
-    int insertImpRecordN(ImpRecordVo impRecordVo);
+    public int insertImpRecordN(ImpRecordVo impRecordVo);
 
 
     /**
@@ -52,7 +48,7 @@ public interface IImpRecordService
      */
     public int insertImpRecord(ImpRecordVo impRecordVo);
 
-    void updateImpRecordN(ImpRecordVo impRecordVo);
+    public void updateImpRecordN(ImpRecordVo impRecordVo);
 
     /**
      * 修改诊断记录

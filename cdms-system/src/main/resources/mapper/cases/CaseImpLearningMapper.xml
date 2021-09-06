@@ -9,6 +9,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="learningName"    column="learning_name"    />
         <result property="pid"    column="pid"    />
         <result property="result"    column="result"    />
+        <result property="resultB"    column="resultB"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -16,7 +17,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectCaseImpLearningVo">
-        select learning_id, learning_name, pid, result, create_by, create_time, update_by, update_time from case_imp_learning
+        select learning_id, learning_name, pid, result, resultB, create_by, create_time, update_by, update_time from case_imp_learning
     </sql>
 
     <select id="selectCaseImpLearningList" parameterType="CaseImpLearning" resultMap="CaseImpLearningResult">
@@ -25,6 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="learningName != null  and learningName != ''"> and learning_name like concat('%', #{learningName}, '%')</if>
             <if test="pid != null "> and pid = #{pid}</if>
             <if test="result != null  and result != ''"> and result = #{result}</if>
+            <if test="resultB != null  and resultB != ''"> and resultB = #{resultB}</if>
         </where>
     </select>
     
@@ -46,6 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="learningName != null  and learningName != ''">learning_name,</if>
             <if test="pid != null ">pid,</if>
             <if test="result != null  and result != ''">result,</if>
+            <if test="resultB != null  and resultB != ''">resultB,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             <if test="createTime != null ">create_time,</if>
             <if test="updateBy != null  and updateBy != ''">update_by,</if>
@@ -55,6 +58,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="learningName != null  and learningName != ''">#{learningName},</if>
             <if test="pid != null ">#{pid},</if>
             <if test="result != null  and result != ''">#{result},</if>
+            <if test="resultB != null  and resultB != ''">#{resultB},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             <if test="createTime != null ">#{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
@@ -68,6 +72,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="learningName != null  and learningName != ''">learning_name = #{learningName},</if>
             <if test="pid != null ">pid = #{pid},</if>
             <if test="result != null  and result != ''">result = #{result},</if>
+            <if test="resultB != null  and resultB != ''">resultB = #{resultB},</if>
             <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>

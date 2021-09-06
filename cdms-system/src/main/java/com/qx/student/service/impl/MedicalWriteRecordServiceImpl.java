@@ -54,7 +54,7 @@ public class MedicalWriteRecordServiceImpl implements IMedicalWriteRecordService
     public Double countMedicalScore(Long id){
         Double countMedicalScore =new Double(0);
         MedicalWriteRecord medicalWriteRecord = medicalWriteRecordMapper.selectMedicalWriteRecordById(id);
-        //基本信息+主体（10部分) 初步诊断3分 其他每个信息1分
+        //基本信息0分 +主体（10部分)+医师 2 每个信息1分
         if (medicalWriteRecord!=null){
             if (medicalWriteRecord.getChiefComplaint()!=null&&!medicalWriteRecord.getChiefComplaint().equals("")){ countMedicalScore+=1.0; }
             if (medicalWriteRecord.getHpi()!=null&&!medicalWriteRecord.getHpi().equals("")){ countMedicalScore+=1.0; }
@@ -65,7 +65,9 @@ public class MedicalWriteRecordServiceImpl implements IMedicalWriteRecordService
             if (medicalWriteRecord.getTgCheck()!=null&&!medicalWriteRecord.getTgCheck().equals("")){ countMedicalScore+=1.0; }
             if (medicalWriteRecord.getJsCheck()!=null&&!medicalWriteRecord.getJsCheck().equals("")){ countMedicalScore+=1.0; }
             if (medicalWriteRecord.getFzCheck()!=null&&!medicalWriteRecord.getFzCheck().equals("")){ countMedicalScore+=1.0; }
-            if (medicalWriteRecord.getPrimaryDiagnosis()!=null&&!medicalWriteRecord.getPrimaryDiagnosis().equals("")){ countMedicalScore+=3.0; }
+            if (medicalWriteRecord.getPrimaryDiagnosis()!=null&&!medicalWriteRecord.getPrimaryDiagnosis().equals("")){ countMedicalScore+=1.0; }
+            if (medicalWriteRecord.getSuperiorDoctor()!=null&&!medicalWriteRecord.getSuperiorDoctor().equals("")){ countMedicalScore+=1.0; }
+            if (medicalWriteRecord.getResidentDoctor()!=null&&!medicalWriteRecord.getResidentDoctor().equals("")){ countMedicalScore+=1.0; }
         }
         return countMedicalScore;
     }

@@ -55,61 +55,6 @@ public class JsCheckRecordServiceImpl implements IJsCheckRecordService
         return record;
     }
 
-    @Override
-    public JsCheckRecord selectJsMissRecordById(Long id, Long patientId)
-    {
-        JsCheckRecord record = jsCheckRecordMapper.selectJsCheckRecordById(id);
-        String[] ids = record.getItemIds().split(",");
-        List<Long> longList = Arrays.asList(ids).stream().map(Long::parseLong).collect(Collectors.toList());
-        Long[] itemIds =  longList.toArray(new Long[]{});
-        List<CaseCheckItem>caseCheckItems=caseCheckItemService.selectCaseCheckItemByIds(itemIds);
-        int count1=0;
-        int count2=0;
-        int count3=0;
-        int count4=0;
-        int count5=0;
-        int count6=0;
-        int count7=0;
-        for (CaseCheckItem caseCheckItem:caseCheckItems){
-            if (caseCheckItem.getPid()==13){count1+=1;}
-            if (caseCheckItem.getPid()==14){count2+=1;}
-            if (caseCheckItem.getPid()==15||caseCheckItem.getPid()==28){count3+=1;}
-            if (caseCheckItem.getPid()==16){count4+=1;}
-            if (caseCheckItem.getPid()==17){count5+=1;}
-            if (caseCheckItem.getPid()==18){count6+=1;}
-            if (caseCheckItem.getPid()==19){count7+=1;}
-        }
-
-        List<Long> allList = new ArrayList<Long>();
-        //给allList添加所有辅助检查itemId
-        allList.add(new Long(13));
-        allList.add(new Long(14));
-        allList.add(new Long(15));
-        allList.add(new Long(16));
-        allList.add(new Long(17));
-        allList.add(new Long(18));
-        allList.add(new Long(19));
-        List<Long> chooseList = new ArrayList<Long>();
-        if (count1>0){allList.remove(new Long(13));}
-        if (count2>0){allList.remove(new Long(14));}
-        if (count3>0){allList.remove(new Long(15));}
-        if (count4>0){allList.remove(new Long(16));}
-        if (count5>0){allList.remove(new Long(17));}
-        if (count6>0){allList.remove(new Long(18));}
-        if (count7>0){allList.remove(new Long(19));}
-
-//        boolean ret = allList.removeAll(longList);
-        Iterator<Long> it = allList.iterator();  //创建迭代器
-        List<Long> missList =new ArrayList<>();
-        while (it.hasNext()){ //循环遍历迭代器
-            missList.add(it.next());
-        }
-        Long[] itemIds1 =  missList.toArray(new Long[]{});
-//        Long[] itemIds =  longList.toArray(new Long[]{});
-        List<CasePatientItem> list = casePatientItemMapper.selectCasePatientItemByIds(patientId,itemIds1);
-        record.setPatientItem(list);
-        return record;
-    }
 
     @Override
     public List<CaseCheckItem> selectJsMissRecordById(Long id)
@@ -139,40 +84,6 @@ public class JsCheckRecordServiceImpl implements IJsCheckRecordService
         Long[] itemIdsMiss =  missList.toArray(new Long[]{});
         List<CaseCheckItem>caseCheckItemList = caseCheckItemService.selectCaseCheckItemByIds(itemIdsMiss);
         return caseCheckItemList;
-       /*
-        int count1=0;
-        int count2=0;
-        int count3=0;
-        int count4=0;
-        int count5=0;
-        int count6=0;
-        int count7=0;
-        for (CaseCheckItem caseCheckItem:caseCheckItems){
-            if (caseCheckItem.getPid()==13){count1+=1;}
-            if (caseCheckItem.getPid()==14){count2+=1;}
-            if (caseCheckItem.getPid()==15||caseCheckItem.getPid()==28){count3+=1;}
-            if (caseCheckItem.getPid()==16){count4+=1;}
-            if (caseCheckItem.getPid()==17){count5+=1;}
-            if (caseCheckItem.getPid()==18){count6+=1;}
-            if (caseCheckItem.getPid()==19){count7+=1;}
-        }
-        List<Long> allList = new ArrayList<Long>();
-        //给allList添加所有检查itemId
-        if (count1==0){allList.add(new Long(13));}
-        if (count2==0){allList.add(new Long(14));}
-        if (count3==0){allList.add(new Long(15));}
-        if (count4==0){allList.add(new Long(16));}
-        if (count5==0){allList.add(new Long(17));}
-        if (count6==0){allList.add(new Long(18));}
-        if (count7==0){allList.add(new Long(19));}
-        *//*Iterator<Long> it = allList.iterator();  //创建迭代器
-        List<Long> missList =new ArrayList<>();
-        while (it.hasNext()){ //循环遍历迭代器
-            missList.add(it.next());
-        }*//*
-        Long[] itemIdsMiss =  allList.toArray(new Long[]{});
-        List<CaseCheckItem>caseCheckItemList = caseCheckItemService.selectCaseCheckItemByIds(itemIdsMiss);
-        return caseCheckItemList;*/
     }
     @Override
     public Double countJsScore (Long id){
@@ -193,32 +104,6 @@ public class JsCheckRecordServiceImpl implements IJsCheckRecordService
         }
         countJsScore=map.size()*1.5;
         if (count>0){ countJsScore += 1.5;}
-
-        /*int count1=0;
-        int count2=0;
-        int count3=0;
-        int count4=0;
-        int count5=0;
-        int count6=0;
-        int count7=0;
-        //共7大方面，每个方面1.5分，共10.5分
-        for (CaseCheckItem caseCheckItem:caseCheckItems){
-            if (caseCheckItem.getPid()==13){count1+=1;}
-            if (caseCheckItem.getPid()==14){count2+=1;}
-            if (caseCheckItem.getPid()==15||caseCheckItem.getPid()==28){count3+=1;}
-            if (caseCheckItem.getPid()==16){count4+=1;}
-            if (caseCheckItem.getPid()==17){count5+=1;}
-            if (caseCheckItem.getPid()==18){count6+=1;}
-            if (caseCheckItem.getPid()==19){count7+=1;}
-        }
-        if (count1>0){countJsScore+=1.5;}
-        if (count2>0){countJsScore+=1.5;}
-        if (count3>0){countJsScore+=1.5;}
-        if (count4>0){countJsScore+=1.5;}
-        if (count5>0){countJsScore+=1.5;}
-        if (count6>0){countJsScore+=1.5;}
-        if (count7>0){countJsScore+=1.5;}*/
-//        countJsScore =ids.length*1.5;
         return countJsScore;
     }
 

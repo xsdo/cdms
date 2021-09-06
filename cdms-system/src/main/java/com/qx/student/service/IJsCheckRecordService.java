@@ -24,8 +24,6 @@ public interface IJsCheckRecordService
      */
     public JsCheckRecord selectJsCheckRecordById(Long id,Long patientId);
 
-    JsCheckRecord selectJsMissRecordById(Long id, Long patientId);
-
     List<CaseCheckItem> selectJsMissRecordById(Long id);
 
     Double countJsScore(Long id);

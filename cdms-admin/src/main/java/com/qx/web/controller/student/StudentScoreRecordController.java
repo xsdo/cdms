@@ -153,7 +153,6 @@ public class StudentScoreRecordController extends BaseController
             //获取精神检查漏采项
             if (studentTrainRecord!=null && studentTrainRecord.getJsRecordId() !=null && !"".equals(studentTrainRecord.getJsRecordId())) {
                 jsMissRecord =jsCheckRecordService.selectJsMissRecordById(studentTrainRecord.getJsRecordId());
-
             }
             //获取辅助检查漏采项
             if (studentTrainRecord!=null && studentTrainRecord.getFzRecordId() !=null && !"".equals(studentTrainRecord.getFzRecordId())) {
@@ -161,7 +160,6 @@ public class StudentScoreRecordController extends BaseController
             }
             //获取学生诊断答案  1
             if (studentTrainRecord !=null && studentTrainRecord.getImpRecordId() !=null && !"".equals(studentTrainRecord.getImpRecordId())) {
-//                impChooseRecord =impRecordService.getImpChoose(studentTrainRecord.getImpRecordId());
                 impChooseVos = impRecordService.getImpChooseVo(studentTrainRecord.getImpRecordId());
             }
             //获取学生治疗答案  1

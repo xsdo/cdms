@@ -33,6 +33,9 @@ public class CaseImpLearning extends BaseEntity
     @Excel(name = "诊断信息")
     private String result;
 
+    @Excel(name = "诊断信息B")
+    private String resultB;
+
     private List<CaseImpLearning> children = new ArrayList<CaseImpLearning>();
 
     /** 父级治疗项目 **/
@@ -91,6 +94,14 @@ public class CaseImpLearning extends BaseEntity
         return result;
     }
 
+    public String getResultB() {
+        return resultB;
+    }
+
+    public void setResultB(String resultB) {
+        this.resultB = resultB;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -98,6 +109,7 @@ public class CaseImpLearning extends BaseEntity
             .append("learningName", getLearningName())
             .append("pid", getPid())
             .append("result", getResult())
+            .append("resultB", getResultB())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())

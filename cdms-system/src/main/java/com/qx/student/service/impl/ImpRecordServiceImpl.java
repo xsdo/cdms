@@ -1,14 +1,10 @@
 package com.qx.student.service.impl;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import com.qx.cases.domain.CaseImp;
-import com.qx.cases.domain.CaseImpDiagnosis;
-import com.qx.cases.service.ICaseImpDiagnosisService;
 import com.qx.cases.service.ICaseImpService;
-import com.qx.common.core.domain.AjaxResult;
 import com.qx.student.domain.ImpSupportRecord;
 import com.qx.student.domain.StudentTrainRecord;
 import com.qx.student.domain.vo.ImpChooseVo;
@@ -48,8 +44,6 @@ public class ImpRecordServiceImpl implements IImpRecordService
     @Autowired
     private ICaseImpService caseImpService;
 
-    @Autowired
-    private ICaseImpDiagnosisService caseImpDiagnosisService;
 
     @Autowired
     private IImpSupportRecordService impSupportRecordService;
@@ -66,6 +60,7 @@ public class ImpRecordServiceImpl implements IImpRecordService
         return impRecordMapper.selectImpRecordById(id);
     }
 
+    //获取imp学生答案
     @Override
     public List<ImpChooseVo> getImpChooseVo(Long id){
         List<ImpChooseVo> impChooseVos =new ArrayList<>();
@@ -82,31 +77,6 @@ public class ImpRecordServiceImpl implements IImpRecordService
         }
         return impChooseVos;
     }
-    @Override
-    public Map<String,String> getImpChoose(Long id){
-
-        Map<String,String> map=new IdentityHashMap<String,String>();
-        ImpRecord impRecord=impRecordMapper.selectImpRecordById(id);
-
-        String[] ids = impRecord.getImpIds().split(",");
-        List<Long> longList = Arrays.asList(ids).stream().map(Long::parseLong).collect(Collectors.toList());
-        String[] types = impRecord.getType().split(",");
-        for (int i =0;i<longList.size()&&i<types.length;i++){
-            if (types[i].equals("0")){
-                CaseImp caseImp =caseImpService.selectCaseImpById(longList.get(i));
-                map.put("zyImp",caseImp.getImpName());
-            }
-            if (types[i].equals("1")){
-                CaseImp caseImp =caseImpService.selectCaseImpById(longList.get(i));
-                map.put(new String("cyImp"),caseImp.getImpName());
-            }
-            if (types[i].equals("2")){
-                CaseImp caseImp =caseImpService.selectCaseImpById(longList.get(i));
-                map.put(new String("jbImp"),caseImp.getImpName());
-            }
-        }
-        return map;
-    }
 
     @Override
     public Double countImpScore(Long id){
@@ -118,13 +88,28 @@ public class ImpRecordServiceImpl implements IImpRecordService
         boolean flag =false;
         boolean flagA =true;
         boolean flagB =true;
+        boolean flag0 =true;
         Double countScoreA =0.0;
         Double countScoreB =0.0;
+        Double countScore0 =0.0;
         for (int i =0;i<longList.size()&&i<types.length;i++){
-            //主要诊断
+            //主要诊断 判断正确得分
             if (longList.get(i)==5&&types[i].equals("0")){
-                countScore += 15.0;
+                countScore += 9.0; //15*60%
+                countScore0 = 6.0; //15*40%
                 flag = true;
+                //判断主要诊断的依据是否正确 错误不得分 正确得40%
+                ImpSupportRecord impSupportRecord = new ImpSupportRecord();
+                impSupportRecord.setImpRecordId(id);
+                impSupportRecord.setPimpId(longList.get(i));
+                List<ImpSupportRecord>impSupportRecords=impSupportRecordService.selectImpSupportRecordList(impSupportRecord);
+                if (impSupportRecords!=null&&impSupportRecords.size()>0){
+                    for (ImpSupportRecord impSupportRecord1:impSupportRecords){
+                        if (impSupportRecord1.getSupport()=="0"||impSupportRecord1.getSupport().equals("0")){
+                            flag0=false;
+                        }
+                    }
+                }
             }
             //次要诊断--只要判断错误均不得分。
             if (types[i].equals("1")){
@@ -146,6 +131,7 @@ public class ImpRecordServiceImpl implements IImpRecordService
         if (flag){
             if (flagA){countScore+=countScoreA;}
             if (flagB){countScore+=countScoreB;}
+            if (flag0){countScore+=countScore0;}
         }else {
             countScore=0.0;
         }
