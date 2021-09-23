@@ -11,6 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="historyRecordId"    column="history_record_id"    />
         <result property="tgRecordId"    column="tg_record_id"    />
         <result property="jsRecordId"    column="js_record_id"    />
+        <result property="xlRecordId"    column="xl_record_id"    />
         <result property="fzRecordId"    column="fz_record_id"    />
         <result property="impRecordId"    column="imp_record_id"    />
         <result property="treatRecordId"    column="treat_record_id"    />
@@ -21,7 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectStudentTrainRecordVo">
-        select id, stu_id, patient_id, history_record_id, tg_record_id, js_record_id, fz_record_id, imp_record_id,
+        select id, stu_id, patient_id, history_record_id, tg_record_id, js_record_id, xl_record_id, fz_record_id, imp_record_id,
         treat_record_id, medical_record_id, status, start_time, end_time from student_train_record
     </sql>
 
@@ -33,6 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="historyRecordId != null "> and history_record_id = #{historyRecordId}</if>
             <if test="tgRecordId != null "> and tg_record_id = #{tgRecordId}</if>
             <if test="jsRecordId != null "> and js_record_id = #{jsRecordId}</if>
+            <if test="xlRecordId != null "> and xl_record_id = #{xlRecordId}</if>
             <if test="fzRecordId != null "> and fz_record_id = #{fzRecordId}</if>
             <if test="impRecordId != null "> and imp_record_id = #{impRecordId}</if>
             <if test="treatRecordId != null "> and treat_record_id = #{treatRecordId}</if>
@@ -56,6 +58,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="historyRecordId != null ">history_record_id,</if>
             <if test="tgRecordId != null ">tg_record_id,</if>
             <if test="jsRecordId != null ">js_record_id,</if>
+            <if test="xlRecordId != null ">xl_record_id,</if>
             <if test="fzRecordId != null ">fz_record_id,</if>
             <if test="impRecordId != null ">imp_record_id,</if>
             <if test="treatRecordId != null ">treat_record_id,</if>
@@ -70,6 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="historyRecordId != null ">#{historyRecordId},</if>
             <if test="tgRecordId != null ">#{tgRecordId},</if>
             <if test="jsRecordId != null ">#{jsRecordId},</if>
+            <if test="xlRecordId != null ">#{xlRecordId},</if>
             <if test="fzRecordId != null ">#{fzRecordId},</if>
             <if test="impRecordId != null ">#{impRecordId},</if>
             <if test="treatRecordId != null ">#{treatRecordId},</if>
@@ -88,6 +92,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="historyRecordId != null ">history_record_id = #{historyRecordId},</if>
             <if test="tgRecordId != null ">tg_record_id = #{tgRecordId},</if>
             <if test="jsRecordId != null ">js_record_id = #{jsRecordId},</if>
+            <if test="xlRecordId != null ">xl_record_id = #{xlRecordId},</if>
             <if test="fzRecordId != null ">fz_record_id = #{fzRecordId},</if>
             <if test="impRecordId != null ">imp_record_id = #{impRecordId},</if>
             <if test="treatRecordId != null ">treat_record_id = #{treatRecordId},</if>

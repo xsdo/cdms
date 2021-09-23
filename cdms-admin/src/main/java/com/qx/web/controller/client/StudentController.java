@@ -53,6 +53,9 @@ public class StudentController extends BaseController {
     private IJsCheckRecordService jsCheckRecordService;
 
     @Autowired
+    private IXlCheckRecordService xlCheckRecordService;
+
+    @Autowired
     private IStudentTrainRecordService studentTrainRecordService;
 
     @Autowired
@@ -261,16 +264,18 @@ public class StudentController extends BaseController {
         AjaxResult result = AjaxResult.success();
         //获取学生训练记录
         StudentTrainRecord trainRecord = studentTrainRecordService.selectStudentTrainRecordById(impRecordVo.getStudentTrainId());
+        if (trainRecord!=null){
+            if (trainRecord.getImpRecordId()==null || "".equals(trainRecord.getImpRecordId())){
+                //新增诊断记录
+                impRecordService.insertImpRecordN(impRecordVo);
+            }else{
+                //更新诊断记录
+                impRecordVo.getImpRecord().setId(trainRecord.getImpRecordId());
+                impRecordService.updateImpRecordN(impRecordVo);
 
-        if (trainRecord.getImpRecordId()==null || "".equals(trainRecord.getImpRecordId())){
-            //新增诊断记录
-            impRecordService.insertImpRecordN(impRecordVo);
-        }else{
-            //更新诊断记录
-            impRecordVo.getImpRecord().setId(trainRecord.getImpRecordId());
-            impRecordService.updateImpRecordN(impRecordVo);
-
+            }
         }
+
         result.put("trainRecord",trainRecord);
         return result;
     }
@@ -329,6 +334,42 @@ public class StudentController extends BaseController {
             fzCheckRecordService.updateFzCheckRecord(fzRecord,itemIds);
         }
 
+        result.put("trainRecord",trainRecord);
+        return result;
+    }
+
+    /**
+     * 存储心理测量检查记录
+     * @param ids
+     * @return
+     */
+    @ApiOperation("存储心理测量检查记录")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "ids", value = "检查项目ids", required = true, dataType = "String" ),
+            @ApiImplicitParam(name = "id", value = "学生训练记录id", required = true, dataType = "Long")
+    })
+    @PostMapping("/addXl")
+    public AjaxResult addXlCheckRecord(String ids,Long id) {
+        LoginStudent loginStudent = tokenUtil.getLoginStudent(ServletUtils.getRequest());
+        if (loginStudent == null) {
+            String msg = StringUtils.format("请求访问：{}，认证失败，无法访问系统资源", ServletUtils.getRequest().getRequestURI());
+            return AjaxResult.error(HttpStatus.UNAUTHORIZED, msg);
+        }
+        AjaxResult result = AjaxResult.success();
+        XlCheckRecord xlRecord = new XlCheckRecord();
+        xlRecord.setItemIds(ids);
+        List<Long> longList = Arrays.asList(ids.split(",")).stream().map(Long::parseLong).collect(Collectors.toList());
+        Long[] itemIds =  longList.toArray(new Long[]{});
+        StudentTrainRecord trainRecord = studentTrainRecordService.selectStudentTrainRecordById(id);
+
+        if (trainRecord.getXlRecordId() == null || "".equals(trainRecord.getXlRecordId())){
+            //新增心理测量检查记录
+            xlCheckRecordService.insertXlCheckRecord(xlRecord,itemIds,trainRecord);
+        }else {
+            //更新心理测量检查记录
+            xlRecord.setId(trainRecord.getXlRecordId());
+            xlCheckRecordService.updateXlCheckRecord(xlRecord,itemIds);
+        }
         result.put("trainRecord",trainRecord);
         return result;
     }

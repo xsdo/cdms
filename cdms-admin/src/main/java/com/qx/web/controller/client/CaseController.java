@@ -50,6 +50,9 @@ public class CaseController extends BaseController {
     private IJscheckSupportRecordService jscheckSupportRecordService;
 
     @Autowired
+    private IXlcheckSupportRecordService xlcheckSupportRecordService;
+
+    @Autowired
     private IFzcheckSupportRecordService fzcheckSupportRecordService;
 
     @Autowired
@@ -67,6 +70,8 @@ public class CaseController extends BaseController {
     @Autowired
     private IJsCheckRecordService jsCheckRecordService;
 
+    @Autowired
+    private IXlCheckRecordService xlCheckRecordService;
     @Autowired
     private ITgCheckRecordService tgCheckRecordService;
 
@@ -279,6 +284,45 @@ public class CaseController extends BaseController {
     }
 
     /**
+     * 心理测量
+     * @param caseCheckItem
+     * @param recordId
+     * @return
+     */
+    @ApiOperation("心理测量")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "caseCheckItem", value = "检查项目",  dataType = "CaseCheckItem"),
+            @ApiImplicitParam(name = "recordId", value = "学生训练记录id",  dataType = "Long")
+    })
+    @GetMapping("/xl")
+    public AjaxResult listXl(CaseCheckItem caseCheckItem,Long recordId)
+    {
+        LoginStudent loginStudent = tokenUtil.getLoginStudent(ServletUtils.getRequest());
+        if (loginStudent==null){
+            String msg = StringUtils.format("请求访问：{}，认证失败，无法访问系统资源", ServletUtils.getRequest().getRequestURI());
+            return AjaxResult.error(HttpStatus.UNAUTHORIZED, msg);
+        }
+
+        AjaxResult ajaxResult = AjaxResult.success();
+        //获取心理测量项目
+        caseCheckItem.setCategory("3");
+        List<CaseCheckItem> list = caseCheckItemService.selectCaseCheckItemList(caseCheckItem);
+        List<CaseCheckItem> caseCheckItems = caseCheckItemService.buildItemTree(list);
+        ajaxResult.put("xlItems",caseCheckItems);
+
+        //获取学生心理测量记录
+        XlCheckRecord xlCheckRecord = null;
+        if (recordId!=null && !"".equals(recordId)){
+            StudentTrainRecord studentTrainRecord = studentTrainRecordService.selectStudentTrainRecordById(recordId);
+            if (studentTrainRecord!=null && studentTrainRecord.getXlRecordId()!=null &&!"".equals(studentTrainRecord.getXlRecordId())) {
+                xlCheckRecord = xlCheckRecordService.selectXLCheckRecordById(studentTrainRecord.getXlRecordId(),studentTrainRecord.getPatientId());
+            }
+        }
+        ajaxResult.put("xlCheckRecord", xlCheckRecord);
+        return ajaxResult;
+    }
+
+    /**
      * 辅助检查
      * @param caseCheckItem
      * @param recordId
@@ -345,6 +389,7 @@ public class CaseController extends BaseController {
         List<HistorySupportRecord> historySupportRecords = null;
         List<TgcheckSupportRecord> tgcheckSupportRecords = null;
         List<JscheckSupportRecord> jscheckSupportRecords = null;
+        List<XlcheckSupportRecord> xlcheckSupportRecords = null;
         List<FzcheckSupportRecord> fzcheckSupportRecords = null;
         ImpRecord impRecord = null;
         List<ImpSupportRecord> impSupportRecords = null;
@@ -375,6 +420,12 @@ public class CaseController extends BaseController {
                 jscheckSupportRecord.setCheckRecordId(studentTrainRecord.getJsRecordId());
                 jscheckSupportRecords = jscheckSupportRecordService.selectJscheckSupportRecordList1(studentTrainRecord.getPatientId(), jscheckSupportRecord);
             }
+            //获取心理测量模块的数据
+            if (studentTrainRecord!=null && studentTrainRecord.getXlRecordId() !=null & !"".equals(studentTrainRecord.getXlRecordId())){
+                XlcheckSupportRecord xlcheckSupportRecord = new XlcheckSupportRecord();
+                xlcheckSupportRecord.setCheckRecordId(studentTrainRecord.getXlRecordId());
+                xlcheckSupportRecords= xlcheckSupportRecordService.selectXlcheckSupportRecordList1(studentTrainRecord.getPatientId(),xlcheckSupportRecord);
+            }
             //获取辅助检查模块的数据
             if (studentTrainRecord!=null && studentTrainRecord.getFzRecordId() !=null && !"".equals(studentTrainRecord.getFzRecordId())) {
                 FzcheckSupportRecord fzcheckSupportRecord = new FzcheckSupportRecord();
@@ -388,6 +439,7 @@ public class CaseController extends BaseController {
         ajaxResult.put("historyRecords", historySupportRecords);
         ajaxResult.put("tgRecords", tgcheckSupportRecords);
         ajaxResult.put("jsRecords", jscheckSupportRecords);
+        ajaxResult.put("xlRecords", xlcheckSupportRecords);
         ajaxResult.put("fzRecords", fzcheckSupportRecords);
         return ajaxResult;
     }
@@ -420,6 +472,7 @@ public class CaseController extends BaseController {
         List<HistorySupportRecord> historySupportRecords = null;
         List<TgcheckSupportRecord> tgcheckSupportRecords = null;
         List<JscheckSupportRecord> jscheckSupportRecords = null;
+        List<XlcheckSupportRecord> xlcheckSupportRecords = null;
         List<FzcheckSupportRecord> fzcheckSupportRecords = null;
         ImpRecord impRecord = null;
         List<ImpSupportRecord> impSupportRecords = null;
@@ -452,6 +505,12 @@ public class CaseController extends BaseController {
                 jscheckSupportRecord.setCheckRecordId(studentTrainRecord.getJsRecordId());
                 jscheckSupportRecords = jscheckSupportRecordService.selectJscheckSupportRecordListCore(studentTrainRecord.getPatientId(), jscheckSupportRecord);
             }
+            //获取心理测量模块的数据
+            if (studentTrainRecord!=null && studentTrainRecord.getXlRecordId() !=null & !"".equals(studentTrainRecord.getXlRecordId())){
+                XlcheckSupportRecord xlcheckSupportRecord = new XlcheckSupportRecord();
+                xlcheckSupportRecord.setCheckRecordId(studentTrainRecord.getXlRecordId());
+                xlcheckSupportRecords= xlcheckSupportRecordService.selectXlcheckSupportRecordListCore(studentTrainRecord.getPatientId(),xlcheckSupportRecord);
+            }
             //获取辅助检查模块的数据
             if (studentTrainRecord!=null && studentTrainRecord.getFzRecordId() !=null && !"".equals(studentTrainRecord.getFzRecordId())) {
                 FzcheckSupportRecord fzcheckSupportRecord = new FzcheckSupportRecord();
@@ -465,6 +524,7 @@ public class CaseController extends BaseController {
         ajaxResult.put("historyRecords", historySupportRecords);
         ajaxResult.put("tgRecords", tgcheckSupportRecords);
         ajaxResult.put("jsRecords", jscheckSupportRecords);
+        ajaxResult.put("xlRecords", xlcheckSupportRecords);
         ajaxResult.put("fzRecords", fzcheckSupportRecords);
         return ajaxResult;
     }

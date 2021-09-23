@@ -7,15 +7,12 @@ import com.qx.cases.domain.CaseCheckItem;
 import com.qx.cases.domain.CasePatientItem;
 import com.qx.cases.mapper.CasePatientItemMapper;
 import com.qx.cases.service.ICaseCheckItemService;
-import com.qx.student.domain.FzcheckSupportRecord;
-import com.qx.student.domain.JsCheckRecord;
-import com.qx.student.domain.StudentTrainRecord;
+import com.qx.student.domain.*;
 import com.qx.student.service.IFzcheckSupportRecordService;
 import com.qx.student.service.IStudentTrainRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.qx.student.mapper.FzCheckRecordMapper;
-import com.qx.student.domain.FzCheckRecord;
 import com.qx.student.service.IFzCheckRecordService;
 
 /**
@@ -60,32 +57,54 @@ public class FzCheckRecordServiceImpl implements IFzCheckRecordService
     @Override
     public List<CaseCheckItem> selectFzMissRecordById(Long id)
     {
+        CaseCheckItem checkItem =new CaseCheckItem();
+        checkItem.setCategory("2");
+        checkItem.setIsMix("0");
+        List<CaseCheckItem>caseCheckItemList=caseCheckItemService.selectCaseCheckItemList(checkItem);
+
         FzCheckRecord record = fzCheckRecordMapper.selectFzCheckRecordById(id);
         String[] ids = record.getItemIds().split(",");
         List<Long> longList = Arrays.asList(ids).stream().map(Long::parseLong).collect(Collectors.toList());
-        List<Long> allList = new ArrayList<Long>();
-        //给allList添加所有辅助检查itemId
-        allList.add(new Long(45));
-        allList.add(new Long(46));
-        allList.add(new Long(66));
-        allList.add(new Long(67));
-        allList.removeAll(longList);
-        Long[] itemIds =  allList.toArray(new Long[]{});
-        List<CaseCheckItem>caseCheckItemList = caseCheckItemService.selectCaseCheckItemByIds(itemIds);
-        return caseCheckItemList;
+        Iterator<CaseCheckItem>it =caseCheckItemList.iterator();
+        while (it.hasNext()){
+            CaseCheckItem caseCheckItemDe=it.next();
+            if (longList.contains(caseCheckItemDe.getItemId())){
+                it.remove();
+            }
+        }
+        List<CaseCheckItem> caseCheckItems = caseCheckItemService.buildItemTree(caseCheckItemList);
+        return caseCheckItems;
     }
 
+    /*实验室检查（每个0.25分，共2分）pid77
+    神经电生理检查（脑电图/脑诱发：1分，多导睡眠1分，共2分）pid78
+    脑影像检查（选CT/MRI计1分，其他不计分，共1分）pid79
+    其他（每个计1分，共4分）pid80 */
     @Override
     public Double countFzScore(Long id){
         Double countFzScore =new Double(0);
         FzCheckRecord record = fzCheckRecordMapper.selectFzCheckRecordById(id);
         String[] ids = record.getItemIds().split(",");
         List<Long> longList = Arrays.asList(ids).stream().map(Long::parseLong).collect(Collectors.toList());
-//        Long[] itemIds =  longList.toArray(new Long[]{});
-        if (longList.contains(new Long(45))){ countFzScore += 2.0;}
-        if (longList.contains(new Long(46))){ countFzScore += 2.0;}
-        if (longList.contains(new Long(66))){ countFzScore += 2.0;}
-        if (longList.contains(new Long(67))){ countFzScore += 2.0;}
+        Long[] itemIds =  longList.toArray(new Long[]{});
+        List<CaseCheckItem>caseCheckItems=caseCheckItemService.selectCaseCheckItemByIds(itemIds);
+        int count78 =0;
+        int count79 =0;
+        for (CaseCheckItem caseCheckItem :caseCheckItems){
+            if (caseCheckItem.getPid()==77){
+                countFzScore+=0.25;
+            }else if (caseCheckItem.getPid()==80){
+                countFzScore+=1.0;
+            }else if (caseCheckItem.getItemId()==45){ //多导id45
+                countFzScore+=1.0;
+            }else if (caseCheckItem.getItemId()==66||caseCheckItem.getItemId()==84){ //脑诱发66 脑电图84
+                count78++;
+            }else if (caseCheckItem.getItemId()==64||caseCheckItem.getItemId()==85){ //CT64 MRI85
+                count79++;
+            }
+        }
+        countFzScore+=(count78>0?1.0:0.0);
+        countFzScore+=(count79>0?1.0:0.0);
         return countFzScore;
     }
     /**

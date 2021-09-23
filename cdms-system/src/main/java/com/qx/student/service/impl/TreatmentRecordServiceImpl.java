@@ -1,5 +1,6 @@
 package com.qx.student.service.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,41 +58,40 @@ public class TreatmentRecordServiceImpl implements ITreatmentRecordService
         String[] ids = record.getTreatmentIds().split(",");
         List<Long> longList = Arrays.asList(ids).stream().map(Long::parseLong).collect(Collectors.toList());
         Long[] itemIds =  longList.toArray(new Long[]{});
-        //选择正压通气得6分
-        if (longList.contains(new Long(49))){
-            countTreatScore+=6.0;
-        }
-        //选了合适的心理治疗方法均得分
-        if (longList.contains(new Long(45))||longList.contains(new Long(48))||longList.contains(new Long(85))){
-            countTreatScore+=4.0;
-        }
         List<CaseTreatment> list = caseTreatmentService.selectTreatmentByIds(itemIds);
         int countYY = 0;
         int countJL = 0;
         int countQT = 0;
+        int countXL = 0;
 
+        //选择正压通气得6分
+        countTreatScore+=(longList.contains(new Long(49))?6.0:0.0);
+        //选择经颅磁刺激（TMS）得分 20%
+        countTreatScore+=(longList.contains(new Long(39))?4.0:0.0);
         for (CaseTreatment caseTreatment:list){
+            //选了合适的心理治疗方法均得分 20% （不合适的方法不得分，包括：暴露疗法44、人际心理治疗83、家庭治疗84、厌恶治疗47）
+            if (caseTreatment.getPid()==3&&caseTreatment.getTreatmentId()!=44&&caseTreatment.getTreatmentId()!=83&&caseTreatment.getTreatmentId()!=84&&caseTreatment.getTreatmentId()!=47){
+                countXL++;
+            }
             //抗抑郁药 1/3
             if (caseTreatment.getPid()==4){
-                countYY+=1;
+                countYY++;
             }
             //抗焦虑药 1/3
             if (caseTreatment.getPid()==16){
-                countJL+=1;
+                countJL++;
             }
             //其他药物 1/3
             if (caseTreatment.getPid()==36){
-                countQT+=1;
+                countQT++;
             }
         }
-        //同时选了抗抑郁药、抗焦虑药、其他中的一种，均得分
-        if (countYY>0&&countJL>0&&countQT>0){
-            countTreatScore+=10;
-        }else {
-            if (countYY>0){countTreatScore+=3.3;}
-            if (countJL>0){countTreatScore+=3.3;}
-            if (countQT>0){countTreatScore+=3.3;}
-        }
+        //选了合适的心理治疗方法 4分
+        //选了抗抑郁药、抗焦虑药、其他中的一种，均得分 2分
+        countTreatScore+=(countXL>0?4.0:0.0);
+        countTreatScore+=(countYY>0?2.0:0.0);
+        countTreatScore+=(countJL>0?2.0:0.0);
+        countTreatScore+=(countQT>0?2.0:0.0);
         return countTreatScore;
     }
     /**

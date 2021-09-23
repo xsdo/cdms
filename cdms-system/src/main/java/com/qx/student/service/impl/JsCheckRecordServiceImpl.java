@@ -54,36 +54,61 @@ public class JsCheckRecordServiceImpl implements IJsCheckRecordService
         record.setPatientItem(list);
         return record;
     }
-
-
+    //获取错采项
     @Override
-    public List<CaseCheckItem> selectJsMissRecordById(Long id)
+    public List<CaseCheckItem> selectJsWrongRecordById(Long id)
     {
+        List<CaseCheckItem>caseCheckItemList=new ArrayList<>();
         JsCheckRecord record = jsCheckRecordMapper.selectJsCheckRecordById(id);
         String[] ids = record.getItemIds().split(",");
         List<Long> longList = Arrays.asList(ids).stream().map(Long::parseLong).collect(Collectors.toList());
         Long[] itemIds =  longList.toArray(new Long[]{});
-        List<CaseCheckItem>caseCheckItems=caseCheckItemService.selectCaseCheckItemByIds(itemIds);
-        //将itemid13-20属于精神治疗的父项目存入map
-        Map<Long,String> map =new HashMap<>();
-        for (int i=13;i<20;i++){
-            map.put(new Long(i),"");
-        }
-        for (CaseCheckItem caseCheckItem:caseCheckItems) {
-            map.remove(caseCheckItem.getPid());
-            if (caseCheckItem.getPid()==28){
-                map.remove(new Long(15));
+        List<CaseCheckItem>checkItems=caseCheckItemService.selectCaseCheckItemByIds(itemIds);
+        Map<Long,String>map =new HashMap<>();
+        for (CaseCheckItem caseCheckItem:checkItems){
+            if (caseCheckItem.getIsMix()=="1"||caseCheckItem.getIsMix().equals("1")){
+                caseCheckItemList.add(caseCheckItem);
+                map.put(caseCheckItem.getPid(),"");
             }
         }
-
-        Iterator<Long> it = map.keySet().iterator();  //创建迭代器
-        List<Long> missList =new ArrayList<>();
-        while (it.hasNext()){ //循环遍历迭代器
-            missList.add(it.next());
+        for (Long itemId:map.keySet()){
+            CaseCheckItem checkItemp=caseCheckItemService.selectCaseCheckItemById(itemId);
+            caseCheckItemList.add(checkItemp);
         }
-        Long[] itemIdsMiss =  missList.toArray(new Long[]{});
-        List<CaseCheckItem>caseCheckItemList = caseCheckItemService.selectCaseCheckItemByIds(itemIdsMiss);
-        return caseCheckItemList;
+        List<CaseCheckItem> caseCheckItems = caseCheckItemService.buildItemTree(caseCheckItemList);
+        return caseCheckItems;
+    }
+
+    //获取漏采项及错采项
+    @Override
+    public List<CaseCheckItem> selectJsMissRecordById(Long id)
+    {
+        //获取精神检查正确项
+        CaseCheckItem checkItem =new CaseCheckItem();
+        checkItem.setCategory("1");
+        checkItem.setIsMix("0");
+        List<CaseCheckItem>caseCheckItemList=caseCheckItemService.selectCaseCheckItemList(checkItem);
+        JsCheckRecord record = jsCheckRecordMapper.selectJsCheckRecordById(id);
+        String[] ids = record.getItemIds().split(",");
+        List<Long> longList = Arrays.asList(ids).stream().map(Long::parseLong).collect(Collectors.toList());
+
+        Iterator<CaseCheckItem>it =caseCheckItemList.iterator();
+        while (it.hasNext()){
+            CaseCheckItem caseCheckItemDe=it.next();
+            if (longList.contains(caseCheckItemDe.getItemId())){
+                it.remove();
+            }
+        }
+        //获取错采项
+        Long[] itemIds =  longList.toArray(new Long[]{});
+        List<CaseCheckItem>checkItems=caseCheckItemService.selectCaseCheckItemByIds(itemIds);
+        for (CaseCheckItem caseCheckItem:checkItems){
+            if (caseCheckItem.getIsMix()=="1"||caseCheckItem.getIsMix().equals("1")){
+                caseCheckItemList.add(caseCheckItem);
+            }
+        }
+        List<CaseCheckItem> caseCheckItems = caseCheckItemService.buildItemTree(caseCheckItemList);
+        return caseCheckItems;
     }
     @Override
     public Double countJsScore (Long id){
@@ -96,14 +121,18 @@ public class JsCheckRecordServiceImpl implements IJsCheckRecordService
         Map<Long,String> map =new HashMap<>();
         int count =0;
         for (CaseCheckItem caseCheckItem:caseCheckItems){
-            if (caseCheckItem.getPid()==15||caseCheckItem.getPid()==28){
-                count++;
-            }else {
-                map.put(caseCheckItem.getPid(),"");
+            //混杂项不计分
+            if (caseCheckItem.getIsMix()!="1"&&!caseCheckItem.getIsMix().equals("1")){
+                //pid15,28为同项
+                if (caseCheckItem.getPid()==15||caseCheckItem.getPid()==28){
+                    count++;
+                }else {
+                    map.put(caseCheckItem.getPid(),"");
+                }
             }
         }
         countJsScore=map.size()*1.5;
-        if (count>0){ countJsScore += 1.5;}
+        countJsScore+=(count>0?1.5:0.0);
         return countJsScore;
     }
 

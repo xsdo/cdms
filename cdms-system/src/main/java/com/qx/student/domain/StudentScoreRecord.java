@@ -44,6 +44,10 @@ public class StudentScoreRecord extends BaseEntity
     @Excel(name = "精神检查分数")
     private Double jsScore;
 
+    /** 心理测量分数 */
+    @Excel(name = "心理测量分数")
+    private Double xlScore;
+
     /** 辅助检查分数 */
     @Excel(name = "辅助检查分数")
     private Double fzScore;
@@ -135,7 +139,15 @@ public class StudentScoreRecord extends BaseEntity
         this.jsScore = jsScore;
     }
 
-    public Double getJsScore() 
+    public Double getXlScore() {
+        return xlScore;
+    }
+
+    public void setXlScore(Double xlScore) {
+        this.xlScore = xlScore;
+    }
+
+    public Double getJsScore()
     {
         return jsScore;
     }
@@ -222,6 +234,7 @@ public class StudentScoreRecord extends BaseEntity
             .append("historyScore", getHistoryScore())
             .append("tgScore", getTgScore())
             .append("jsScore", getJsScore())
+            .append("xlScore", getXlScore())
             .append("fzScore", getFzScore())
             .append("impScore", getImpScore())
             .append("treatScore", getTreatScore())

@@ -8,6 +8,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="itemId"    column="item_id"    />
         <result property="itemName"    column="item_name"    />
         <result property="pid"    column="pid"    />
+        <result property="isMix"    column="isMix"    />
         <result property="category"    column="category"    />
         <result property="records"    column="records"    />
         <result property="significance"    column="significance"    />
@@ -18,7 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectCaseCheckItemVo">
-        select item_id, item_name, pid, category, create_by, create_time, update_by, update_time from case_check_item
+        select item_id, item_name, pid, isMix, category, create_by, create_time, update_by, update_time from case_check_item
     </sql>
 
     <select id="selectCaseCheckItemList" parameterType="CaseCheckItem" resultMap="CaseCheckItemResult">
@@ -26,6 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="itemName != null  and itemName != ''"> and item_name like concat('%', #{itemName}, '%')</if>
             <if test="pid != null "> and pid = #{pid}</if>
+            <if test="isMix != null  and isMix != ''"> and isMix = #{isMix}</if>
             <if test="category != null  and category != ''"> and category = #{category}</if>
 
         </where>
@@ -53,6 +55,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="itemName != null  and itemName != ''">item_name,</if>
             <if test="pid != null ">pid,</if>
+            <if test="isMix != null  and isMix != ''">isMix,</if>
             <if test="category != null  and category != ''">category,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             <if test="createTime != null ">create_time,</if>
@@ -62,6 +65,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="itemName != null  and itemName != ''">#{itemName},</if>
             <if test="pid != null ">#{pid},</if>
+            <if test="isMix != null  and isMix != ''">#{isMix},</if>
             <if test="category != null  and category != ''">#{category},</if>
 
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
@@ -76,6 +80,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="itemName != null  and itemName != ''">item_name = #{itemName},</if>
             <if test="pid != null ">pid = #{pid},</if>
+            <if test="isMix != null  and isMix != ''">isMix = #{isMix},</if>
             <if test="category != null  and category != ''">category = #{category},</if>
             <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>

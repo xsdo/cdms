@@ -4,6 +4,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.qx.cases.domain.CaseImp;
+import com.qx.cases.domain.CaseImpDiagnosis;
+import com.qx.cases.service.ICaseImpDiagnosisService;
 import com.qx.cases.service.ICaseImpService;
 import com.qx.student.domain.ImpSupportRecord;
 import com.qx.student.domain.StudentTrainRecord;
@@ -39,15 +41,19 @@ public class ImpRecordServiceImpl implements IImpRecordService
     private IJscheckSupportRecordService jscheckSupportRecordService;
 
     @Autowired
+    private IXlcheckSupportRecordService xlcheckSupportRecordService;
+
+    @Autowired
     private IFzcheckSupportRecordService fzcheckSupportRecordService;
 
     @Autowired
     private ICaseImpService caseImpService;
 
-
     @Autowired
     private IImpSupportRecordService impSupportRecordService;
 
+    @Autowired
+    private ICaseImpDiagnosisService caseImpDiagnosisService;
     /**
      * 查询诊断记录
      * 
@@ -78,6 +84,13 @@ public class ImpRecordServiceImpl implements IImpRecordService
         return impChooseVos;
     }
 
+    /*诊断：
+    慢性失眠伴焦虑、抑郁状态（5分） 81
+    贫血（2分） 1
+    不宁腿综合征（2分） 4
+    中度阻塞性睡眠呼吸暂停综合症（1分） 5
+    鉴别诊断：每个1分，共4分。发作性睡病8，单纯性打鼾9，情绪障碍所致失眠6，躯体疾病所致失眠7
+    诊断依据：共6分（共6大方面，每个方面1分）*/
     @Override
     public Double countImpScore(Long id){
         Double countScore =new Double(0);
@@ -85,57 +98,47 @@ public class ImpRecordServiceImpl implements IImpRecordService
         String[] ids = impRecord.getImpIds().split(",");
         List<Long> longList = Arrays.asList(ids).stream().map(Long::parseLong).collect(Collectors.toList());
         String[] types = impRecord.getType().split(",");
-        boolean flag =false;
-        boolean flagA =true;
-        boolean flagB =true;
-        boolean flag0 =true;
-        Double countScoreA =0.0;
-        Double countScoreB =0.0;
-        Double countScore0 =0.0;
-        for (int i =0;i<longList.size()&&i<types.length;i++){
+        int count83=0;
+        int count89=0;
+        for (int i =0;i<longList.size()&&i<types.length;i++) {
             //主要诊断 判断正确得分
-            if (longList.get(i)==5&&types[i].equals("0")){
-                countScore += 9.0; //15*60%
-                countScore0 = 6.0; //15*40%
-                flag = true;
-                //判断主要诊断的依据是否正确 错误不得分 正确得40%
-                ImpSupportRecord impSupportRecord = new ImpSupportRecord();
-                impSupportRecord.setImpRecordId(id);
-                impSupportRecord.setPimpId(longList.get(i));
-                List<ImpSupportRecord>impSupportRecords=impSupportRecordService.selectImpSupportRecordList(impSupportRecord);
-                if (impSupportRecords!=null&&impSupportRecords.size()>0){
-                    for (ImpSupportRecord impSupportRecord1:impSupportRecords){
-                        if (impSupportRecord1.getSupport()=="0"||impSupportRecord1.getSupport().equals("0")){
-                            flag0=false;
+            if (types[i].equals("0")) {
+                if (longList.get(i) == 81) {
+                    countScore += 5.0;
+                } else if (longList.get(i) == 1 || longList.get(i) == 5) {
+                    countScore += 1.0;
+                } else if (longList.get(i) == 4) {
+                    countScore += 2.0;
+                }
+                //鉴别诊断：每个1分，共4分。
+            } else if (types[i].equals("2")) {
+                if (longList.get(i) == 6 || longList.get(i) == 7 || longList.get(i) == 8 || longList.get(i) == 9) {
+                    countScore += 1.0;
+                }
+            }
+        }
+        //判断主要诊断的依据是否正确 共6分（共6大方面，每个方面1分）
+        ImpSupportRecord impSupportRecord = new ImpSupportRecord();
+        impSupportRecord.setImpRecordId(id);
+        List<ImpSupportRecord>impSupportRecords=impSupportRecordService.selectImpSupportRecordList(impSupportRecord);
+        if (impSupportRecords!=null&&impSupportRecords.size()>0){
+            for (ImpSupportRecord impSupportRecord1:impSupportRecords){
+                CaseImpDiagnosis caseImpDiagnosis =caseImpDiagnosisService.selectCaseImpDiagnosisById(impSupportRecord1.getBasisId());
+                if (caseImpDiagnosis!=null){
+                    if (impSupportRecord1.getSupport()=="1"||impSupportRecord1.getSupport().equals("1")){
+                        if (caseImpDiagnosis.getPid()==82){
+                            countScore+=1.0;
+                        }else if (caseImpDiagnosis.getPid()==83){
+                            count83++;
+                        }else if (caseImpDiagnosis.getPid()==89){
+                            count89++;
                         }
                     }
                 }
             }
-            //次要诊断--只要判断错误均不得分。
-            if (types[i].equals("1")){
-                if (longList.get(i)!=1&&longList.get(i)!=2&&longList.get(i)!=3&&longList.get(i)!=4){
-                    flagA=false;
-                }else {
-                    countScoreA =2.5;
-                }
-            }
-            //鉴别诊断--只要判断错误均不得分。
-            if (types[i].equals("2")){
-                if (longList.get(i)!=6&&longList.get(i)!=7&&longList.get(i)!=8&&longList.get(i)!=9){
-                    flagB=false;
-                }else {
-                    countScoreB =2.5;
-                }
-            }
         }
-        if (flag){
-            if (flagA){countScore+=countScoreA;}
-            if (flagB){countScore+=countScoreB;}
-            if (flag0){countScore+=countScore0;}
-        }else {
-            countScore=0.0;
-        }
-
+        countScore+=(count83>0?1.0:0.0);
+        countScore+=(count89>0?1.0:0.0);
         return countScore;
     }
 
@@ -179,6 +182,11 @@ public class ImpRecordServiceImpl implements IImpRecordService
         if (impRecordVo.getJscheckSupportRecordList()!=null && impRecordVo.getJscheckSupportRecordList().size()>0){
 
             jscheckSupportRecordService.updateJscheckSupportRecordBatch(impRecordVo.getJscheckSupportRecordList());
+        }
+        //更新心理测量项目支持记录
+        if (impRecordVo.getXlcheckSupportRecordList()!=null && impRecordVo.getXlcheckSupportRecordList().size()>0){
+
+            xlcheckSupportRecordService.updateXlcheckSupportRecordBatch(impRecordVo.getXlcheckSupportRecordList());
         }
         //更新辅助检查项目支持记录
         if (impRecordVo.getFzcheckSupportRecordList()!=null && impRecordVo.getFzcheckSupportRecordList().size()>0){
@@ -261,6 +269,11 @@ public class ImpRecordServiceImpl implements IImpRecordService
         if (impRecordVo.getJscheckSupportRecordList()!=null && impRecordVo.getJscheckSupportRecordList().size()>0){
 
             jscheckSupportRecordService.updateJscheckSupportRecordBatch(impRecordVo.getJscheckSupportRecordList());
+        }
+        //更新心理测量项目支持记录
+        if (impRecordVo.getXlcheckSupportRecordList()!=null && impRecordVo.getXlcheckSupportRecordList().size()>0){
+
+            xlcheckSupportRecordService.updateXlcheckSupportRecordBatch(impRecordVo.getXlcheckSupportRecordList());
         }
         //更新辅助检查项目支持记录
         if (impRecordVo.getFzcheckSupportRecordList()!=null && impRecordVo.getFzcheckSupportRecordList().size()>0){

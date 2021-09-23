@@ -32,6 +32,10 @@ public class CaseCheckItem extends BaseEntity
     @Excel(name = "父id")
     private Long pid;
 
+    /** 是否混杂项（0非 1混杂项） */
+    @Excel(name = "检查类型", readConverterExp = "0非 1混杂项")
+    private String isMix;
+
     /** 检查类型（0体格检查 1精神状况检查 2辅助检查） */
     @Excel(name = "检查类型", readConverterExp = "0=体格检查,1=精神状况检查,2=辅助检查")
     private String category;
@@ -86,7 +90,16 @@ public class CaseCheckItem extends BaseEntity
     {
         return pid;
     }
-    public void setCategory(String category) 
+
+    public String getIsMix() {
+        return isMix;
+    }
+
+    public void setIsMix(String isMix) {
+        this.isMix = isMix;
+    }
+
+    public void setCategory(String category)
     {
         this.category = category;
     }
@@ -103,6 +116,7 @@ public class CaseCheckItem extends BaseEntity
             .append("itemId", getItemId())
             .append("itemName", getItemName())
             .append("pid", getPid())
+            .append("isMix", getIsMix())
             .append("category", getCategory())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())

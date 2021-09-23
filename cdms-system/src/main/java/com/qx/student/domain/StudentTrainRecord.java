@@ -42,6 +42,10 @@ public class StudentTrainRecord implements Serializable
     @Excel(name = "精神检查记录ID")
     private Long jsRecordId;
 
+    /** 心理测量记录ID */
+    @Excel(name = "心理测量记录ID")
+    private Long xlRecordId;
+
     /** 辅助检查记录ID */
     @Excel(name = "辅助检查记录ID")
     private Long fzRecordId;
@@ -136,6 +140,13 @@ public class StudentTrainRecord implements Serializable
         this.jsRecordId = jsRecordId;
     }
 
+    public Long getXlRecordId() {
+        return xlRecordId;
+    }
+    public void setXlRecordId(Long xlRecordId) {
+        this.xlRecordId = xlRecordId;
+    }
+
     public Long getJsRecordId()
     {
         return jsRecordId;
@@ -195,6 +206,7 @@ public class StudentTrainRecord implements Serializable
                 .append("historyRecordId", getHistoryRecordId())
                 .append("tgRecordId", getTgRecordId())
                 .append("jsRecordId", getJsRecordId())
+                .append("xlRecordId", getXlRecordId())
                 .append("fzRecordId", getFzRecordId())
                 .append("impRecordId", getImpRecordId())
                 .append("treatRecordId", getTreatRecordId())

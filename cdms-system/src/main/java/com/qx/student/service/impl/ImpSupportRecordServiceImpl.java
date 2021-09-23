@@ -77,20 +77,22 @@ public class ImpSupportRecordServiceImpl implements IImpSupportRecordService
         return impSupportRecordMapper.insertImpSupportRecordByList(list);
     }
 
+    //新增诊断依据支持表 固定为impId 81 （慢性失眠伴焦虑、抑郁状态 ）
     @Override
     public void insertImpSupport(ImpRecord impRecord, String supports){
         String[] ids = impRecord.getImpIds().split(",");
         List<Long> longList = Arrays.asList(ids).stream().map(Long::parseLong).collect(Collectors.toList());
         String[] types = impRecord.getType().split(",");
-        //获取主要诊断id
-        Long impId=new Long(0);
+        //获取主要诊断id 目前为固定81依据
+        Long impId=new Long(81);
         List<Long>basisIds=new ArrayList<>();
-        for (int i =0;i<longList.size()&&i<types.length;i++) {
+        /*for (int i =0;i<longList.size()&&i<types.length;i++) {
             if (types[i].equals("0")){
                 impId=longList.get(i);
                 caseImpDiagnosisService.getImpChildId(basisIds, longList.get(i));
             }
-        }
+        }*/
+        caseImpDiagnosisService.getImpChildId(basisIds,impId);
         this.insertImpSupportByImpid(basisIds,impRecord.getId(),impId);
         //更新imp支持记录
         String[]basisIdList = supports.split(",");
@@ -110,6 +112,7 @@ public class ImpSupportRecordServiceImpl implements IImpSupportRecordService
             }
     }
 
+    //更新诊断依据支持表 固定为impId 81 （慢性失眠伴焦虑、抑郁状态 ）
     @Override
     public void updataImpSupport(ImpRecord impRecord, String supports){
         String[] ids = impRecord.getImpIds().split(",");
@@ -118,15 +121,16 @@ public class ImpSupportRecordServiceImpl implements IImpSupportRecordService
         //更新imp支持记录
         String[]basisIdList = supports.split(",");
         List<Long> list = Arrays.asList(basisIdList).stream().map(Long::parseLong).collect(Collectors.toList());
-        //获取主要诊断id
-        Long impId=new Long(0);
+        //获取主要诊断id 目前为固定81依据
+        Long impId=new Long(81);
         List<Long>basisIds=new ArrayList<>();
-        for (int i =0;i<longList.size()&&i<types.length;i++) {
+        /*for (int i =0;i<longList.size()&&i<types.length;i++) {
             if (types[i].equals("0")){
                 impId=longList.get(i);
                 caseImpDiagnosisService.getImpChildId(basisIds, longList.get(i));
             }
-        }
+        }*/
+        caseImpDiagnosisService.getImpChildId(basisIds, impId);
         ImpSupportRecord impSupport=new ImpSupportRecord();
         impSupport.setPimpId(impId);
         impSupport.setImpRecordId(impRecord.getId());

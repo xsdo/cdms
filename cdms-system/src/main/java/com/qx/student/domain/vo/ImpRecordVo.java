@@ -17,6 +17,8 @@ public class ImpRecordVo implements Serializable{
 
     private List<JscheckSupportRecord> jscheckSupportRecordList;
 
+    private List<XlcheckSupportRecord> xlcheckSupportRecordList;
+
     private List<FzcheckSupportRecord> fzcheckSupportRecordList;
 
     private Long studentTrainId;
@@ -77,5 +79,13 @@ public class ImpRecordVo implements Serializable{
 
     public void setStudentTrainId(Long studentTrainId) {
         this.studentTrainId = studentTrainId;
+    }
+
+    public List<XlcheckSupportRecord> getXlcheckSupportRecordList() {
+        return xlcheckSupportRecordList;
+    }
+
+    public void setXlcheckSupportRecordList(List<XlcheckSupportRecord> xlcheckSupportRecordList) {
+        this.xlcheckSupportRecordList = xlcheckSupportRecordList;
     }
 }

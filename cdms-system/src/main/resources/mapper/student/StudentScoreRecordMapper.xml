@@ -12,6 +12,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="historyScore"    column="history_score"    />
         <result property="tgScore"    column="tg_score"    />
         <result property="jsScore"    column="js_score"    />
+        <result property="xlScore"    column="xl_score"    />
         <result property="fzScore"    column="fz_score"    />
         <result property="impScore"    column="imp_score"    />
         <result property="treatScore"    column="treat_score"    />
@@ -24,7 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectStudentScoreRecordVo">
-        select id, stu_id, patient_id, record_id, history_score, tg_score, js_score, fz_score, imp_score, treat_score, medical_score, sum_score, status, remarks, create_time, updata_time from student_score_record
+        select id, stu_id, patient_id, record_id, history_score, tg_score, js_score, xl_score, fz_score, imp_score, treat_score, medical_score, sum_score, status, remarks, create_time, updata_time from student_score_record
     </sql>
 
     <select id="selectStudentScoreAvg"  resultType="Double">
@@ -55,6 +56,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="historyScore != null "> and history_score = #{historyScore}</if>
             <if test="tgScore != null "> and tg_score = #{tgScore}</if>
             <if test="jsScore != null "> and js_score = #{jsScore}</if>
+            <if test="xlScore != null "> and xl_score = #{xlScore}</if>
             <if test="fzScore != null "> and fz_score = #{fzScore}</if>
             <if test="impScore != null "> and imp_score = #{impScore}</if>
             <if test="treatScore != null "> and treat_score = #{treatScore}</if>
@@ -83,6 +85,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="historyScore != null ">history_score,</if>
             <if test="tgScore != null ">tg_score,</if>
             <if test="jsScore != null ">js_score,</if>
+            <if test="xlScore != null ">xl_score,</if>
             <if test="fzScore != null ">fz_score,</if>
             <if test="impScore != null ">imp_score,</if>
             <if test="treatScore != null ">treat_score,</if>
@@ -100,6 +103,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="historyScore != null ">#{historyScore},</if>
             <if test="tgScore != null ">#{tgScore},</if>
             <if test="jsScore != null ">#{jsScore},</if>
+            <if test="xlScore != null ">#{xlScore},</if>
             <if test="fzScore != null ">#{fzScore},</if>
             <if test="impScore != null ">#{impScore},</if>
             <if test="treatScore != null ">#{treatScore},</if>
@@ -121,6 +125,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="historyScore != null ">history_score = #{historyScore},</if>
             <if test="tgScore != null ">tg_score = #{tgScore},</if>
             <if test="jsScore != null ">js_score = #{jsScore},</if>
+            <if test="xlScore != null ">xl_score = #{xlScore},</if>
             <if test="fzScore != null ">fz_score = #{fzScore},</if>
             <if test="impScore != null ">imp_score = #{impScore},</if>
             <if test="treatScore != null ">treat_score = #{treatScore},</if>

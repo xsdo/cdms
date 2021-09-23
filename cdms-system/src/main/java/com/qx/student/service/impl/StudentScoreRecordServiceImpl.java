@@ -72,6 +72,7 @@ public class StudentScoreRecordServiceImpl implements IStudentScoreRecordService
         if (studentScoreRecord.getHistoryScore()!=null){sumScore+=studentScoreRecord.getHistoryScore();}
         if (studentScoreRecord.getTgScore()!=null){sumScore+=studentScoreRecord.getTgScore();}
         if (studentScoreRecord.getJsScore()!=null){sumScore+=studentScoreRecord.getJsScore();}
+        if (studentScoreRecord.getXlScore()!=null){sumScore+=studentScoreRecord.getXlScore();}
         if (studentScoreRecord.getFzScore()!=null){sumScore+=studentScoreRecord.getFzScore();}
         if (studentScoreRecord.getImpScore()!=null){sumScore+=studentScoreRecord.getImpScore();}
         if (studentScoreRecord.getTreatScore()!=null){sumScore+=studentScoreRecord.getTreatScore();}
@@ -106,6 +107,7 @@ public class StudentScoreRecordServiceImpl implements IStudentScoreRecordService
         return studentScoreRecordMapper.selectStudentScoreMax();
     }
 
+    //计算当前成绩战胜百分多少用户
     @Override
     public int getScoreAccount(Double sumScore){
         int account= 0;
@@ -117,30 +119,34 @@ public class StudentScoreRecordServiceImpl implements IStudentScoreRecordService
         return account;
     }
 
+    //根据战胜用户判断成绩登记
     @Override
     public String getLevel (int account){
         String level ="D";
         if (account>=90){level="A";}
-        else if (account>=75&&account<90){level="B";}
-        else if (account>=60&&account<75){level="C";}
+        else if (account>=80&&account<90){level="B";}
+        else if (account>=60&&account<80){level="C";}
 
         return level;
     }
 
+    //获取每个项目得分率
     @Override
     public AjaxResult getScoringRate(StudentScoreRecord studentScoreRecord){
         AjaxResult ajaxResult =AjaxResult.success();
         if (studentScoreRecord!=null){
             int historySR=new Double(studentScoreRecord.getHistoryScore()*100/22.5).intValue();
-            int tgSR=new Double(studentScoreRecord.getTgScore()*100/7).intValue();
+            int tgSR=new Double(studentScoreRecord.getTgScore()*100/6).intValue();
             int jsSR=new Double(studentScoreRecord.getJsScore()*100/10.5).intValue();
-            int fzSR=new Double(studentScoreRecord.getFzScore()*100/8).intValue();
+            int xlSR=new Double(studentScoreRecord.getXlScore()*100/7).intValue();
+            int fzSR=new Double(studentScoreRecord.getFzScore()*100/9).intValue();
             int impSR=new Double(studentScoreRecord.getImpScore()*100/20).intValue();
             int treatSR=new Double(studentScoreRecord.getTreatScore()*100/20).intValue();
-            int medicalSR=new Double(studentScoreRecord.getMedicalScore()*100/12).intValue();
+            int medicalSR=new Double(studentScoreRecord.getMedicalScore()*100/5).intValue();
             ajaxResult.put("historySR",historySR+"%");
             ajaxResult.put("tgSR",tgSR+"%");
             ajaxResult.put("jsSR",jsSR+"%");
+            ajaxResult.put("xlSR",xlSR+"%");
             ajaxResult.put("fzSR",fzSR+"%");
             ajaxResult.put("impSR",impSR+"%");
             ajaxResult.put("treatSR",treatSR+"%");

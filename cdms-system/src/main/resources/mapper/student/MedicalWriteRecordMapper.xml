@@ -19,6 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="familyHistory"    column="family_history"    />
         <result property="tgCheck"    column="tg_check"    />
         <result property="jsCheck"    column="js_check"    />
+        <result property="xlCheck"    column="xl_check"    />
         <result property="fzCheck"    column="fz_check"    />
         <result property="primaryDiagnosis"    column="primary_diagnosis"    />
         <result property="superiorDoctor"    column="superior_doctor"    />
@@ -26,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectMedicalWriteRecordVo">
-        select id, patient_id, department, bed_no, hospital_no, reliable, chief_complaint, hpi, past_history, personal_history, mmch, family_history, tg_check, js_check, fz_check, primary_diagnosis, superior_doctor, resident_doctor from medical_write_record
+        select id, patient_id, department, bed_no, hospital_no, reliable, chief_complaint, hpi, past_history, personal_history, mmch, family_history, tg_check, js_check, xl_check, fz_check, primary_diagnosis, superior_doctor, resident_doctor from medical_write_record
     </sql>
 
     <select id="selectMedicalWriteRecordList" parameterType="MedicalWriteRecord" resultMap="MedicalWriteRecordResult">
@@ -45,6 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="familyHistory != null  and familyHistory != ''"> and family_history = #{familyHistory}</if>
             <if test="tgCheck != null  and tgCheck != ''"> and tg_check = #{tgCheck}</if>
             <if test="jsCheck != null  and jsCheck != ''"> and js_check = #{jsCheck}</if>
+            <if test="xlCheck != null  and xlCheck != ''"> and xl_check = #{xlCheck}</if>
             <if test="fzCheck != null  and fzCheck != ''"> and fz_check = #{fzCheck}</if>
             <if test="primaryDiagnosis != null  and primaryDiagnosis != ''"> and primary_diagnosis = #{primaryDiagnosis}</if>
             <if test="superiorDoctor != null  and superiorDoctor != ''"> and superior_doctor = #{superiorDoctor}</if>
@@ -74,6 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="familyHistory != null  and familyHistory != ''">family_history,</if>
             <if test="tgCheck != null  and tgCheck != ''">tg_check,</if>
             <if test="jsCheck != null  and jsCheck != ''">js_check,</if>
+            <if test="xlCheck != null  and xlCheck != ''">xl_check,</if>
             <if test="fzCheck != null  and fzCheck != ''">fz_check,</if>
             <if test="primaryDiagnosis != null  and primaryDiagnosis != ''">primary_diagnosis,</if>
             <if test="superiorDoctor != null  and superiorDoctor != ''">superior_doctor,</if>
@@ -94,6 +97,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="familyHistory != null  and familyHistory != ''">#{familyHistory},</if>
             <if test="tgCheck != null  and tgCheck != ''">#{tgCheck},</if>
             <if test="jsCheck != null  and jsCheck != ''">#{jsCheck},</if>
+            <if test="xlCheck != null  and xlCheck != ''">#{xlCheck},</if>
             <if test="fzCheck != null  and fzCheck != ''">#{fzCheck},</if>
             <if test="primaryDiagnosis != null  and primaryDiagnosis != ''">#{primaryDiagnosis},</if>
             <if test="superiorDoctor != null  and superiorDoctor != ''">#{superiorDoctor},</if>
@@ -117,6 +121,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="familyHistory != null  and familyHistory != ''">family_history = #{familyHistory},</if>
             <if test="tgCheck != null  and tgCheck != ''">tg_check = #{tgCheck},</if>
             <if test="jsCheck != null  and jsCheck != ''">js_check = #{jsCheck},</if>
+            <if test="xlCheck != null  and xlCheck != ''">xl_check = #{xlCheck},</if>
             <if test="fzCheck != null  and fzCheck != ''">fz_check = #{fzCheck},</if>
             <if test="primaryDiagnosis != null  and primaryDiagnosis != ''">primary_diagnosis = #{primaryDiagnosis},</if>
             <if test="superiorDoctor != null  and superiorDoctor != ''">superior_doctor = #{superiorDoctor},</if>

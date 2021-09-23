@@ -72,6 +72,10 @@ public class MedicalWriteRecord implements Serializable
     @Excel(name = "精神检查")
     private String jsCheck;
 
+    /** 心理测量 */
+    @Excel(name = "心理测量")
+    private String xlCheck;
+
     /** 辅助检查 */
     @Excel(name = "辅助检查")
     private String fzCheck;
@@ -251,6 +255,14 @@ public class MedicalWriteRecord implements Serializable
         return residentDoctor;
     }
 
+    public String getXlCheck() {
+        return xlCheck;
+    }
+
+    public void setXlCheck(String xlCheck) {
+        this.xlCheck = xlCheck;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -268,6 +280,7 @@ public class MedicalWriteRecord implements Serializable
             .append("familyHistory", getFamilyHistory())
             .append("tgCheck", getTgCheck())
             .append("jsCheck", getJsCheck())
+            .append("xlCheck", getXlCheck())
             .append("fzCheck", getFzCheck())
             .append("primaryDiagnosis", getPrimaryDiagnosis())
             .append("superiorDoctor", getSuperiorDoctor())

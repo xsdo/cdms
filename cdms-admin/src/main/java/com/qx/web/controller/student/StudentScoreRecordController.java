@@ -1,9 +1,7 @@
 package com.qx.web.controller.student;
 
-import java.util.Date;
+
 import java.util.List;
-import java.util.Map;
-import java.util.IdentityHashMap;
 
 import com.qx.cases.domain.CaseCheckItem;
 import com.qx.cases.domain.CaseQuestion;
@@ -11,11 +9,6 @@ import com.qx.cases.service.*;
 import com.qx.student.domain.*;
 import com.qx.student.domain.vo.ImpChooseVo;
 import com.qx.student.service.*;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import org.apache.ibatis.annotations.Case;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,22 +68,7 @@ public class StudentScoreRecordController extends BaseController
     private IMedicalWriteRecordService medicalWriteRecordService;
 
     @Autowired
-    private ICaseCheckItemService caseCheckItemService;
-
-    @Autowired
-    private ICaseQuestionService caseQuestionService;
-
-    @Autowired
-    private ICasePatientService casePatientService;
-
-    @Autowired
-    private ICasePatientItemService patientItemService;
-
-    @Autowired
-    private ICaseImpService caseImpService;
-
-    @Autowired
-    private ICaseTreatmentService caseTreatmentService;
+    private IXlCheckRecordService xlCheckRecordService;
 
     /**
      * 查询学生训练分数列表
@@ -138,39 +116,53 @@ public class StudentScoreRecordController extends BaseController
             List<CaseQuestion> historyMissRecord=null;
             List<CaseCheckItem>tgMissRecord=null;
             List<CaseCheckItem>jsMissRecord=null;
+//            List<CaseCheckItem>jsWrongRecord=null;
+            List<CaseCheckItem>xlMissRecord=null;
+//            List<CaseCheckItem>xlWrongRecord=null;
             List<CaseCheckItem>fzMissRecord=null;
 //            Map<String,String> impChooseRecord= new IdentityHashMap<String,String>() ;;
             List<ImpChooseVo>impChooseVos =null;
             TreatmentRecord treatChooseRecord =null;
-            //获取病史采集漏采项
-            if (studentTrainRecord!=null && studentTrainRecord.getHistoryRecordId() != null && !"".equals(studentTrainRecord.getHistoryRecordId())){
-                historyMissRecord=historyTakingRecordService.selectHistoryMissQuestions(studentTrainRecord.getHistoryRecordId());
+            if (studentTrainRecord!=null){
+                //获取病史采集漏采项 1
+                if (studentTrainRecord.getHistoryRecordId() != null && !"".equals(studentTrainRecord.getHistoryRecordId())){
+                    historyMissRecord=historyTakingRecordService.selectHistoryMissQuestions(studentTrainRecord.getHistoryRecordId());
+                }
+                //获取体格检查漏采项 1
+                if (studentTrainRecord.getTgRecordId() !=null && !"".equals(studentTrainRecord.getTgRecordId())) {
+                    tgMissRecord = tgCheckRecordService.selectTgMissRecordById(studentTrainRecord.getTgRecordId());
+                }
+                //获取精神检查漏采项 和 错采项 1
+                if (studentTrainRecord.getJsRecordId() !=null && !"".equals(studentTrainRecord.getJsRecordId())) {
+                    jsMissRecord =jsCheckRecordService.selectJsMissRecordById(studentTrainRecord.getJsRecordId());
+//                    jsWrongRecord =jsCheckRecordService.selectJsWrongRecordById(studentTrainRecord.getJsRecordId());
+                }
+                //获取心理测量漏采项 和 错采项 1
+                if (studentTrainRecord.getXlRecordId()!=null&&!"".equals(studentTrainRecord.getXlRecordId())){
+                    xlMissRecord=xlCheckRecordService.selectXlMissRecordById(studentTrainRecord.getXlRecordId());
+//                    xlWrongRecord=xlCheckRecordService.selectXlWrongRecordById(studentTrainRecord.getXlRecordId());
+                }
+                //获取辅助检查漏采项 1
+                if (studentTrainRecord.getFzRecordId() !=null && !"".equals(studentTrainRecord.getFzRecordId())) {
+                    fzMissRecord =fzCheckRecordService.selectFzMissRecordById(studentTrainRecord.getFzRecordId());
+                }
+                //获取学生诊断答案 1
+                if (studentTrainRecord.getImpRecordId() !=null && !"".equals(studentTrainRecord.getImpRecordId())) {
+                    impChooseVos = impRecordService.getImpChooseVo(studentTrainRecord.getImpRecordId());
+                }
+                //获取学生治疗答案 1
+                if (studentTrainRecord.getTreatRecordId() !=null && !"".equals(studentTrainRecord.getTreatRecordId())) {
+                    treatChooseRecord = treatmentRecordService.selectTreatmentRecordById(studentTrainRecord.getTreatRecordId());
+                }
+                //获取学生病例书写（固定模板）
             }
-            //获取体格检查漏采项
-            if (studentTrainRecord!=null && studentTrainRecord.getTgRecordId() !=null && !"".equals(studentTrainRecord.getTgRecordId())) {
-                tgMissRecord = tgCheckRecordService.selectTgMissRecordById(studentTrainRecord.getTgRecordId());
-            }
-            //获取精神检查漏采项
-            if (studentTrainRecord!=null && studentTrainRecord.getJsRecordId() !=null && !"".equals(studentTrainRecord.getJsRecordId())) {
-                jsMissRecord =jsCheckRecordService.selectJsMissRecordById(studentTrainRecord.getJsRecordId());
-            }
-            //获取辅助检查漏采项
-            if (studentTrainRecord!=null && studentTrainRecord.getFzRecordId() !=null && !"".equals(studentTrainRecord.getFzRecordId())) {
-                fzMissRecord =fzCheckRecordService.selectFzMissRecordById(studentTrainRecord.getFzRecordId());
-            }
-            //获取学生诊断答案  1
-            if (studentTrainRecord !=null && studentTrainRecord.getImpRecordId() !=null && !"".equals(studentTrainRecord.getImpRecordId())) {
-                impChooseVos = impRecordService.getImpChooseVo(studentTrainRecord.getImpRecordId());
-            }
-            //获取学生治疗答案  1
-            if (studentTrainRecord!=null && studentTrainRecord.getTreatRecordId() !=null && !"".equals(studentTrainRecord.getTreatRecordId())) {
-                treatChooseRecord = treatmentRecordService.selectTreatmentRecordById(studentTrainRecord.getTreatRecordId());
-            }
-            //获取学生病例书写（固定模板）
 
             ajax.put("historyMissRecord",historyMissRecord);
             ajax.put("tgMissRecord",tgMissRecord);
             ajax.put("jsMissRecord",jsMissRecord);
+//            ajax.put("jsWrongRecord",jsWrongRecord);
+            ajax.put("xlMissRecord",xlMissRecord);
+//            ajax.put("xlWrongRecord",xlWrongRecord);
             ajax.put("fzMissRecord",fzMissRecord);
             ajax.put("impChooseRecord",impChooseVos);
             ajax.put("treatChooseRecord",treatChooseRecord);
@@ -190,31 +182,35 @@ public class StudentScoreRecordController extends BaseController
                 return AjaxResult.error("未查询到检查记录");
             }
             StudentScoreRecord studentScoreRecord =new StudentScoreRecord();
-                //计算问诊分数  1
+                //计算问诊分数 1
                 if (studentTrainRecord!=null && studentTrainRecord.getHistoryRecordId() != null && !"".equals(studentTrainRecord.getHistoryRecordId())){
                     studentScoreRecord.setHistoryScore(historyTakingRecordService.countHistoryScore(studentTrainRecord.getHistoryRecordId()));
                 }
-                //计算体格检查分数   1
+                //计算体格检查分数 1
                 if (studentTrainRecord!=null && studentTrainRecord.getTgRecordId() !=null && !"".equals(studentTrainRecord.getTgRecordId())) {
                     studentScoreRecord.setTgScore(tgCheckRecordService.countTgScore(studentTrainRecord.getTgRecordId()));
                 }
-                //计算精神检查分数   1
+                //计算精神检查分数 1
                 if (studentTrainRecord!=null && studentTrainRecord.getJsRecordId() !=null && !"".equals(studentTrainRecord.getJsRecordId())) {
                     studentScoreRecord.setJsScore(jsCheckRecordService.countJsScore(studentTrainRecord.getJsRecordId()));
                 }
-                //计算辅助检查分数  1
+                //计算心理测量分数 1
+                if (studentTrainRecord!=null && studentTrainRecord.getXlRecordId() !=null & !"".equals(studentTrainRecord.getXlRecordId())){
+                    studentScoreRecord.setXlScore(xlCheckRecordService.countXlScore(studentTrainRecord.getXlRecordId()));
+                }
+                //计算辅助检查分数 1
                 if (studentTrainRecord!=null && studentTrainRecord.getFzRecordId() !=null && !"".equals(studentTrainRecord.getFzRecordId())) {
                     studentScoreRecord.setFzScore(fzCheckRecordService.countFzScore(studentTrainRecord.getFzRecordId()));
                 }
-                //计算诊断得分  1
+                //计算诊断得分 1
                 if (studentTrainRecord !=null && studentTrainRecord.getImpRecordId() !=null && !"".equals(studentTrainRecord.getImpRecordId())) {
                     studentScoreRecord.setImpScore(impRecordService.countImpScore(studentTrainRecord.getImpRecordId()));
                 }
-                //计算治疗分数  1
+                //计算治疗分数 1
                  if (studentTrainRecord!=null && studentTrainRecord.getTreatRecordId() !=null && !"".equals(studentTrainRecord.getTreatRecordId())) {
                     studentScoreRecord.setTreatScore(treatmentRecordService.countTreatScore(studentTrainRecord.getTreatRecordId()));
                 }
-                //计算病例书写分数  1
+                //计算病例书写分数 1
                 if (studentTrainRecord!=null && studentTrainRecord.getMedicalRecordId() !=null && !"".equals(studentTrainRecord.getMedicalRecordId())) {
                     studentScoreRecord.setMedicalScore(medicalWriteRecordService.countMedicalScore(studentTrainRecord.getMedicalRecordId()));
                 }

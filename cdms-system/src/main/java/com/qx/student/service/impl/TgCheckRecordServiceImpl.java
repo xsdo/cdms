@@ -1,9 +1,6 @@
 package com.qx.student.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.qx.cases.domain.CaseCheckItem;
@@ -67,30 +64,35 @@ public class TgCheckRecordServiceImpl implements ITgCheckRecordService
     @Override
     public List<CaseCheckItem> selectTgMissRecordById(Long id)
     {
+        //获取体格检查所有项
+        CaseCheckItem checkItem =new CaseCheckItem();
+        checkItem.setCategory("0");
+        checkItem.setIsMix("0");
+        checkItem.setPid(new Long(0));
+        List<CaseCheckItem>caseCheckItemList=caseCheckItemService.selectCaseCheckItemList(checkItem);
+        //获取学生已选项itemId
         TgCheckRecord record = tgCheckRecordMapper.selectTgCheckRecordById(id);
         String[] ids = record.getItemIds().split(",");
         List<Long> longList = Arrays.asList(ids).stream().map(Long::parseLong).collect(Collectors.toList());
         Long[] itemIds =  longList.toArray(new Long[]{});
         List<CaseCheckItem>caseCheckItems=caseCheckItemService.selectCaseCheckItemByIds(itemIds);
-        int count=0;
         for (CaseCheckItem caseCheckItem:caseCheckItems){
-            if (caseCheckItem.getPid()==1){count += 1;}
+            if (caseCheckItem.getPid()!=0){
+                longList.add(caseCheckItem.getPid());
+                longList.remove(caseCheckItem.getItemId());
+            }
         }
-        List<Long> allList = new ArrayList<Long>();
-        //给allList添加所有辅助检查itemId
-        if (count==0){
-            allList.add(new Long(1));
+        Iterator<CaseCheckItem>it =caseCheckItemList.iterator();
+        while (it.hasNext()){
+            CaseCheckItem caseCheckItemDe=it.next();
+            if (longList.contains(caseCheckItemDe.getItemId())){
+                it.remove();
+            }
         }
-        for (int i =2;i<8;i++){
-            allList.add(new Long(i));
-        }
-        allList.removeAll(longList);
-        Long[] itemIdList =  allList.toArray(new Long[]{});
-
-        List<CaseCheckItem>caseCheckItemList = caseCheckItemService.selectCaseCheckItemByIds(itemIdList);
         return caseCheckItemList;
     }
 
+    //共15大方面，每个方面0.4分，共6分
     @Override
     public Double countTgScore(Long id){
         Double countTgScore =new Double(0);
@@ -99,21 +101,26 @@ public class TgCheckRecordServiceImpl implements ITgCheckRecordService
         List<Long> longList = Arrays.asList(ids).stream().map(Long::parseLong).collect(Collectors.toList());
         Long[] itemIds =  longList.toArray(new Long[]{});
         List<CaseCheckItem>caseCheckItems=caseCheckItemService.selectCaseCheckItemByIds(itemIds);
-        int count=0;
-
-        //pid为1 ==生命体征
+        int countWG=0;
+        Map<Long,String> map =new HashMap<>();
         for (CaseCheckItem caseCheckItem:caseCheckItems){
-            if (caseCheckItem.getPid()==1){
-                count += 1;
+            //子项目只计算父项目
+            if (caseCheckItem.getPid()!=0){
+                map.put(caseCheckItem.getPid(),"");
             }
-            if (caseCheckItem.getPid()==0&&caseCheckItem.getItemId()!=1&&caseCheckItem.getItemId()!=64&&caseCheckItem.getItemId()!=65){
-                countTgScore += 1.0;
+            //拒查项 135,136 不给分
+            else if (caseCheckItem.getItemId()!=135&&caseCheckItem.getItemId()!=136){
+                //id为113,114,115,116  ==五官  只计算一次给分
+                if (caseCheckItem.getItemId()==113||caseCheckItem.getItemId()==114||caseCheckItem.getItemId()==115||caseCheckItem.getItemId()==116){
+                    countWG++;
+                }else {
+                    countTgScore+=0.4;
+                }
             }
-
         }
-        if (count>0){
-            countTgScore += 1.0;
-        }
+        countTgScore+=(countWG>0?0.4:0.0);
+        Double pidScore=map.size()*0.4;
+        countTgScore+=pidScore;
         return countTgScore;
     }
     /**
