@@ -98,7 +98,7 @@ public class ImpRecordServiceImpl implements IImpRecordService
         String[] ids = impRecord.getImpIds().split(",");
         List<Long> longList = Arrays.asList(ids).stream().map(Long::parseLong).collect(Collectors.toList());
         String[] types = impRecord.getType().split(",");
-        int count83=0;
+//        int count83=0;
         int count89=0;
         for (int i =0;i<longList.size()&&i<types.length;i++) {
             //主要诊断 判断正确得分
@@ -128,16 +128,17 @@ public class ImpRecordServiceImpl implements IImpRecordService
                     if (impSupportRecord1.getSupport()=="1"||impSupportRecord1.getSupport().equals("1")){
                         if (caseImpDiagnosis.getPid()==82){
                             countScore+=1.0;
-                        }else if (caseImpDiagnosis.getPid()==83){
-                            count83++;
-                        }else if (caseImpDiagnosis.getPid()==89){
+                        }else if (caseImpDiagnosis.getPid()==83&&caseImpDiagnosis.getImpId()==85){
+//                            count83++;
+                            countScore+=1.0;
+                        }else if (caseImpDiagnosis.getPid()==89&&(caseImpDiagnosis.getImpId()==91||caseImpDiagnosis.getImpId()==93||caseImpDiagnosis.getImpId()==94)){
                             count89++;
                         }
                     }
                 }
             }
         }
-        countScore+=(count83>0?1.0:0.0);
+//        countScore+=(count83>0?1.0:0.0);
         countScore+=(count89>0?1.0:0.0);
         return countScore;
     }
