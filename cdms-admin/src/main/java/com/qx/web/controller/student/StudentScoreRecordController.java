@@ -70,6 +70,8 @@ public class StudentScoreRecordController extends BaseController
     @Autowired
     private IXlCheckRecordService xlCheckRecordService;
 
+    @Autowired
+    private ICaseQuestionService caseQuestionService;
     /**
      * 查询学生训练分数列表
      */
@@ -126,7 +128,8 @@ public class StudentScoreRecordController extends BaseController
             if (studentTrainRecord!=null){
                 //获取病史采集漏采项 1
                 if (studentTrainRecord.getHistoryRecordId() != null && !"".equals(studentTrainRecord.getHistoryRecordId())){
-                    historyMissRecord=historyTakingRecordService.selectHistoryMissQuestions(studentTrainRecord.getHistoryRecordId());
+                    //给病史采集项添加所属类型
+                    historyMissRecord=caseQuestionService.selectCaseQuestionListType(historyTakingRecordService.selectHistoryMissQuestions(studentTrainRecord.getHistoryRecordId()));
                 }
                 //获取体格检查漏采项 1
                 if (studentTrainRecord.getTgRecordId() !=null && !"".equals(studentTrainRecord.getTgRecordId())) {
@@ -238,7 +241,7 @@ public class StudentScoreRecordController extends BaseController
                 Double avgScore = studentScoreRecordService.selectStudentScoreAvg();
                 Double maxScore = studentScoreRecordService.selectStudentScoreMax();
                 int account = studentScoreRecordService.getScoreAccount(sumScore);
-                String level = studentScoreRecordService.getLevel(account);
+                String level = studentScoreRecordService.getLevel(sumScore);
                 ajax.put("avgScore", avgScore);
                 ajax.put("maxScore", maxScore);
                 ajax.put("account", account);
@@ -275,7 +278,7 @@ public class StudentScoreRecordController extends BaseController
         avgScore = studentScoreRecordService.selectStudentScoreAvg();
         maxScore = studentScoreRecordService.selectStudentScoreMax();
         account = studentScoreRecordService.getScoreAccount(sumScore);
-        level = studentScoreRecordService.getLevel(account);
+        level = studentScoreRecordService.getLevel(sumScore);
         ajax.put("avgScore",avgScore);
         ajax.put("maxScore",maxScore);
         ajax.put("account",account);

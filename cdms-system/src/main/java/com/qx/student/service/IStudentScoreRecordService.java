@@ -36,6 +36,8 @@ public interface IStudentScoreRecordService
 
     String getLevel(int account);
 
+    String getLevel(Double sumScore);
+
     AjaxResult getScoringRate(StudentScoreRecord studentScoreRecord);
 
     /**

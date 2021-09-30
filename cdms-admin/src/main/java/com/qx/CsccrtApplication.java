@@ -26,7 +26,7 @@ public class CsccrtApplication {
 	 public static void main(String[] args){
 	        // System.setProperty("spring.devtools.restart.enabled", "false");
 	        SpringApplication.run(CsccrtApplication.class, args);
-	        System.out.println("(♥◠‿◠)ﾉﾞ  xxx训练系统启动成功   ლ(´ڡ`ლ)ﾞ  \n");
+	        System.out.println("(♥◠‿◠)ﾉﾞ  教育系统启动成功   ლ(´ڡ`ლ)ﾞ  \n");
 	 }
 	@Bean
 	public Filter corsFilter() {

@@ -130,6 +130,15 @@ public class StudentScoreRecordServiceImpl implements IStudentScoreRecordService
         return level;
     }
 
+    @Override
+    public String getLevel (Double sumScore){
+        String level ="D";
+        if (sumScore>=90){level="A";}
+        else if (sumScore>=80&&sumScore<90){level="B";}
+        else if (sumScore>=60&&sumScore<80){level="C";}
+
+        return level;
+    }
     //获取每个项目得分率
     @Override
     public AjaxResult getScoringRate(StudentScoreRecord studentScoreRecord){
