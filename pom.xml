@@ -5,7 +5,7 @@
 	<groupId>com.qx</groupId>
 	<artifactId>cdms</artifactId>
 	<version>1.0</version>
-	<name>cmds</name>
+	<name>cdms</name>
 	<description>临床思维综合训练系统</description>
 
 	<properties>

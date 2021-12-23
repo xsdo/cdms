@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qx.student.mapper.CaseForumMapper">
+    
+    <resultMap type="CaseForum" id="CaseForumResult">
+        <result property="id"    column="id"    />
+        <result property="theme"    column="theme"    />
+        <result property="content"    column="content"    />
+        <result property="pid"    column="pid"    />
+        <result property="studentId"    column="student_id"    />
+        <result property="studentName"    column="student_name"    />
+        <result property="forumType"    column="forum_type"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="agreeNumber"    column="agree_number"    />
+        <result property="collectNumber"    column="collect_number"    />
+        <result property="isDel"    column="is_del"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectCaseForumVo">
+        select id, theme, content, pid, student_id, student_name, forum_type, create_time, update_time, agree_number, collect_number, is_del, remark from case_forum
+    </sql>
+
+    <select id="getReplyCount" resultType="Integer">
+        select count(1) from case_forum where pid = #{id}
+    </select>
+
+    <select id="selectCaseForumList" parameterType="CaseForum" resultMap="CaseForumResult">
+        <include refid="selectCaseForumVo"/>
+        <where>  
+            <if test="theme != null  and theme != ''"> and theme = #{theme}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="pid != null "> and pid = #{pid}</if>
+            <if test="studentId != null "> and student_id = #{studentId}</if>
+            <if test="studentName != null  and studentName != ''"> and student_name like concat('%', #{studentName}, '%')</if>
+            <if test="forumType != null "> and forum_type = #{forumType}</if>
+            <if test="agreeNumber != null "> and agree_number = #{agreeNumber}</if>
+            <if test="collectNumber != null "> and collect_number = #{collectNumber}</if>
+            <if test="isDel != null "> and is_del = #{isDel}</if>
+        </where>
+    </select>
+    
+    <select id="selectCaseForumById" parameterType="Long" resultMap="CaseForumResult">
+        <include refid="selectCaseForumVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCaseForum" parameterType="CaseForum" useGeneratedKeys="true" keyProperty="id">
+        insert into case_forum
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="theme != null  and theme != ''">theme,</if>
+            <if test="content != null  and content != ''">content,</if>
+            <if test="pid != null ">pid,</if>
+            <if test="studentId != null ">student_id,</if>
+            <if test="studentName != null  and studentName != ''">student_name,</if>
+            <if test="forumType != null ">forum_type,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="agreeNumber != null ">agree_number,</if>
+            <if test="collectNumber != null ">collect_number,</if>
+            <if test="isDel != null ">is_del,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="theme != null  and theme != ''">#{theme},</if>
+            <if test="content != null  and content != ''">#{content},</if>
+            <if test="pid != null ">#{pid},</if>
+            <if test="studentId != null ">#{studentId},</if>
+            <if test="studentName != null  and studentName != ''">#{studentName},</if>
+            <if test="forumType != null ">#{forumType},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="agreeNumber != null ">#{agreeNumber},</if>
+            <if test="collectNumber != null ">#{collectNumber},</if>
+            <if test="isDel != null ">#{isDel},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCaseForum" parameterType="CaseForum">
+        update case_forum
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="theme != null  and theme != ''">theme = #{theme},</if>
+            <if test="content != null  and content != ''">content = #{content},</if>
+            <if test="pid != null ">pid = #{pid},</if>
+            <if test="studentId != null ">student_id = #{studentId},</if>
+            <if test="studentName != null  and studentName != ''">student_name = #{studentName},</if>
+            <if test="forumType != null ">forum_type = #{forumType},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="agreeNumber != null ">agree_number = #{agreeNumber},</if>
+            <if test="collectNumber != null ">collect_number = #{collectNumber},</if>
+            <if test="isDel != null ">is_del = #{isDel},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCaseForumById" parameterType="Long">
+        delete from case_forum where id = #{id}
+    </delete>
+
+    <delete id="deleteCaseForumByIds" parameterType="String">
+        delete from case_forum where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
